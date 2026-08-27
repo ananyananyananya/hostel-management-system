@@ -1,6 +1,16 @@
 function login({ onLogin }) {
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    const role = event.target.role.value;
+
+    onLogin(role);
+  };
+
   return (
     <div className="login-page">
+
       <div className="login-box">
 
         <h1>Smart Hostel</h1>
@@ -9,31 +19,62 @@ function login({ onLogin }) {
           Hostel Maintenance Management System
         </p>
 
-        <div className="form-group">
-          <label>Email</label>
-          <input
-            type="email"
-            placeholder="Enter your email"
-          />
-        </div>
+        <form onSubmit={handleSubmit}>
 
-        <div className="form-group">
-          <label>Password</label>
-          <input
-            type="password"
-            placeholder="Enter your password"
-          />
-        </div>
+          <div className="form-group">
 
-        <button onClick={onLogin}>
-          Login
-        </button>
+            <label>Email</label>
+
+            <input
+              type="email"
+              placeholder="Enter your email"
+              required
+            />
+
+          </div>
+
+          <div className="form-group">
+
+            <label>Password</label>
+
+            <input
+              type="password"
+              placeholder="Enter your password"
+              required
+            />
+
+          </div>
+
+          <div className="form-group">
+
+            <label>Login as</label>
+
+            <select name="role" defaultValue="student">
+
+              <option value="student">
+                Student
+              </option>
+
+              <option value="warden">
+                Warden
+              </option>
+
+            </select>
+
+          </div>
+
+          <button type="submit">
+            Login
+          </button>
+
+        </form>
 
         <p className="register-text">
           Don't have an account? <span>Register</span>
         </p>
 
       </div>
+
     </div>
   );
 }

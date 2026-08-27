@@ -1,8 +1,9 @@
 import { useState } from "react";
 
-import Login from "./pages/login";
-import StudentDashboard from "./pages/studentdashboard";
-import RaiseComplaint from "./pages/raisecomplaint";
+import Login from "./pages/Login";
+import StudentDashboard from "./pages/StudentDashboard";
+import RaiseComplaint from "./pages/RaiseComplaint";
+import WardenDashboard from "./pages/WardenDashboard";
 
 import "./App.css";
 
@@ -10,12 +11,16 @@ function App() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  const [role, setRole] = useState("student");
+
   const [currentPage, setCurrentPage] = useState("dashboard");
 
   const [complaints, setComplaints] = useState([]);
 
-  const handleLogin = () => {
+  const handleLogin = (selectedRole) => {
+    setRole(selectedRole);
     setIsLoggedIn(true);
+    setCurrentPage("dashboard");
   };
 
   const handleLogout = () => {
@@ -49,11 +54,23 @@ function App() {
     );
   }
 
-  if (currentPage === "raise-complaint") {
+  if (
+    role === "student" &&
+    currentPage === "raise-complaint"
+  ) {
     return (
       <RaiseComplaint
         onBack={handleBackToDashboard}
         onSubmit={handleSubmitComplaint}
+      />
+    );
+  }
+
+  if (role === "warden") {
+    return (
+      <WardenDashboard
+        complaints={complaints}
+        onLogout={handleLogout}
       />
     );
   }
