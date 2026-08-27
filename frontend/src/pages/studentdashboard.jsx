@@ -1,12 +1,15 @@
-function studentdashboard({ onLogout, onRaiseComplaint }) {
+function StudentDashboard({
+  onLogout,
+  onRaiseComplaint,
+  complaints
+}) {
+
   return (
     <div className="dashboard">
 
       <header className="navbar">
 
-        <div>
-          <h1>Smart Hostel</h1>
-        </div>
+        <h1>Smart Hostel</h1>
 
         <button
           className="logout-button"
@@ -30,8 +33,8 @@ function studentdashboard({ onLogout, onRaiseComplaint }) {
           <h3>Need something fixed?</h3>
 
           <p>
-            Report a hostel maintenance issue and track its progress
-            until it is resolved.
+            Report a hostel maintenance issue and track its
+            progress until it is resolved.
           </p>
 
           <button
@@ -45,9 +48,55 @@ function studentdashboard({ onLogout, onRaiseComplaint }) {
 
         <h3>My Complaints</h3>
 
-        <div className="empty-state">
-          <p>You haven't submitted any complaints yet.</p>
-        </div>
+        {complaints.length === 0 ? (
+
+          <div className="empty-state">
+            <p>
+              You haven't submitted any complaints yet.
+            </p>
+          </div>
+
+        ) : (
+
+          <div className="complaints-list">
+
+            {complaints.map((complaint) => (
+
+              <div
+                className="complaint-card"
+                key={complaint.id}
+              >
+
+                <h3>{complaint.title}</h3>
+
+                <p>
+                  <strong>Category:</strong>{" "}
+                  {complaint.category}
+                </p>
+
+                <p>
+                  <strong>Location:</strong>{" "}
+                  {complaint.hostelBlock},{" "}
+                  Room {complaint.roomNumber}
+                </p>
+
+                <p>
+                    <strong>Status:</strong>{" "}
+                    {complaint.status}
+                </p>
+
+                <p>
+                    <strong>Submitted:</strong>{" "}
+                    {complaint.createdAt}
+                </p>
+
+              </div>
+
+            ))}
+
+          </div>
+
+        )}
 
       </main>
 
@@ -55,4 +104,4 @@ function studentdashboard({ onLogout, onRaiseComplaint }) {
   );
 }
 
-export default studentdashboard;
+export default StudentDashboard;
