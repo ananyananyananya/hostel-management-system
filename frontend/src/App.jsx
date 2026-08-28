@@ -1,9 +1,9 @@
 import { useState } from "react";
 
-import Login from "./pages/Login";
-import StudentDashboard from "./pages/StudentDashboard";
-import RaiseComplaint from "./pages/RaiseComplaint";
-import WardenDashboard from "./pages/WardenDashboard";
+import Login from "./pages/login";
+import StudentDashboard from "./pages/studentdashboard";
+import RaiseComplaint from "./pages/raisecomplaint";
+import WardenDashboard from "./pages/wardendashboard";
 
 import "./App.css";
 
@@ -45,6 +45,17 @@ function App() {
 
     setCurrentPage("dashboard");
   };
+
+  const handleUpdateComplaint = (complaintId, updates) => {
+
+  setComplaints(
+    complaints.map((complaint) =>
+      complaint.id === complaintId
+        ? { ...complaint, ...updates }
+        : complaint
+    )
+  );
+};
 
   if (!isLoggedIn) {
     return (

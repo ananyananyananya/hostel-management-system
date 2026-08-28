@@ -149,16 +149,16 @@ function raisecomplaint({ onBack, onSubmit }) {
                 Select hostel block
               </option>
 
-              <option value="Block A">
-                Block A
+              <option value="LH A">
+                LH-A
               </option>
 
-              <option value="Block B">
-                Block B
+              <option value="LH B">
+                LH-B
               </option>
 
-              <option value="Block C">
-                Block C
+              <option value="LH C">
+                LH-C
               </option>
 
             </select>

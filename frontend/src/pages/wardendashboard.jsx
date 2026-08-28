@@ -107,8 +107,7 @@ function wardendashboard({ complaints, onLogout }) {
 
                 <p>
                   <strong>Location:</strong>{" "}
-                  {complaint.hostelBlock},{" "}
-                  Room {complaint.roomNumber}
+                  {complaint.hostelBlock}{"-"}{complaint.roomNumber}
                 </p>
 
                 <p>

@@ -16,7 +16,7 @@ function login({ onLogin }) {
         <h1>Smart Hostel</h1>
 
         <p className="subtitle">
-          Hostel Maintenance Management System
+          Hostel Complaint Management System
         </p>
 
         <form onSubmit={handleSubmit}>
@@ -27,7 +27,7 @@ function login({ onLogin }) {
 
             <input
               type="email"
-              placeholder="Enter your email"
+              placeholder="Enter your college email ID"
               required
             />
 
@@ -49,7 +49,11 @@ function login({ onLogin }) {
 
             <label>Login as</label>
 
-            <select name="role" defaultValue="student">
+            <select name="role" defaultValue="select">
+
+              <option value="select" disabled>
+                Select Role
+              </option>
 
               <option value="student">
                 Student

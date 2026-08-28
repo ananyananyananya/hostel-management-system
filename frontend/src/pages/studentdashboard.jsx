@@ -25,7 +25,7 @@ function StudentDashboard({
         <h2>Student Dashboard</h2>
 
         <p className="dashboard-subtitle">
-          Welcome! Track and manage your hostel maintenance complaints.
+          Welcome! Track and manage your hostel complaints.
         </p>
 
         <div className="welcome-card">
@@ -33,8 +33,7 @@ function StudentDashboard({
           <h3>Need something fixed?</h3>
 
           <p>
-            Report a hostel maintenance issue and track its
-            progress until it is resolved.
+            Report a hostel maintenance issue and track its progress until its resolved.
           </p>
 
           <button
