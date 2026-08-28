@@ -1,4 +1,8 @@
-function wardendashboard({ complaints, onLogout }) {
+function wardendashboard({
+  complaints,
+  onLogout,
+  onUpdateComplaint
+}) {
   const totalComplaints = complaints.length;
 
   const openComplaints = complaints.filter(
@@ -21,6 +25,7 @@ function wardendashboard({ complaints, onLogout }) {
         <h1>Smart Hostel</h1>
 
         <div className="navbar-right">
+
           <span>Warden</span>
 
           <button
@@ -29,6 +34,7 @@ function wardendashboard({ complaints, onLogout }) {
           >
             Logout
           </button>
+
         </div>
 
       </header>
@@ -74,9 +80,11 @@ function wardendashboard({ complaints, onLogout }) {
         {complaints.length === 0 ? (
 
           <div className="empty-state">
+
             <p>
               No complaints have been submitted yet.
             </p>
+
           </div>
 
         ) : (
@@ -107,7 +115,8 @@ function wardendashboard({ complaints, onLogout }) {
 
                 <p>
                   <strong>Location:</strong>{" "}
-                  {complaint.hostelBlock}{"-"}{complaint.roomNumber}
+                  {complaint.hostelBlock}{" - "}
+                  {complaint.roomNumber}
                 </p>
 
                 <p>
@@ -115,10 +124,83 @@ function wardendashboard({ complaints, onLogout }) {
                   {complaint.description}
                 </p>
 
-                <p>
-                  <strong>Priority:</strong>{" "}
-                  {complaint.priority}
-                </p>
+                {/* Warden Controls */}
+
+                <div className="complaint-controls">
+
+                  <div className="control-group">
+
+                    <label>Status</label>
+
+                    <select
+                      value={complaint.status}
+                      onChange={(event) =>
+                        onUpdateComplaint(
+                          complaint.id,
+                          {
+                            status: event.target.value
+                          }
+                        )
+                      }
+                    >
+
+                      <option value="OPEN">
+                        Open
+                      </option>
+
+                      <option value="IN_PROGRESS">
+                        In Progress
+                      </option>
+
+                      <option value="RESOLVED">
+                        Resolved
+                      </option>
+
+                    </select>
+
+                  </div>
+
+                  <div className="control-group">
+
+                    <label>Priority</label>
+
+                    <select
+                      value={complaint.priority}
+                      onChange={(event) =>
+                        onUpdateComplaint(
+                          complaint.id,
+                          {
+                            priority: event.target.value
+                          }
+                        )
+                      }
+                    >
+
+                      <option value="PENDING">
+                        Pending
+                      </option>
+
+                      <option value="LOW">
+                        Low
+                      </option>
+
+                      <option value="MEDIUM">
+                        Medium
+                      </option>
+
+                      <option value="HIGH">
+                        High
+                      </option>
+
+                      <option value="CRITICAL">
+                        Critical
+                      </option>
+
+                    </select>
+
+                  </div>
+
+                </div>
 
                 <p>
                   <strong>Submitted:</strong>{" "}

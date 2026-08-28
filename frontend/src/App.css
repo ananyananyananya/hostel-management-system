@@ -400,3 +400,49 @@ body {
   font-size: 15px;
   background: white;
 }
+
+/* WARDEN CONTROLS */
+
+.complaint-controls {
+  display: flex;
+  gap: 24px;
+  margin-top: 22px;
+  padding: 18px 0 5px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.control-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.control-group label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.control-group select {
+  min-width: 140px;
+  padding: 9px 36px 9px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: #1f2937;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  outline: none;
+  appearance: auto;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.control-group select:hover {
+  border-color: #9ca3af;
+}
+
+.control-group select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
