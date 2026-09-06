@@ -7,6 +7,24 @@ import WardenDashboard from "./pages/wardendashboard";
 
 import "./App.css";
 
+const technicians = [
+  {
+    id: 1,
+    name: "Raj Kumar",
+    specialization: "Electrical"
+  },
+  {
+    id: 2,
+    name: "Arjun Singh",
+    specialization: "Plumbing"
+  },
+  {
+    id: 3,
+    name: "Priya Sharma",
+    specialization: "General Maintenance"
+  }
+];
+
 function App() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -82,6 +100,8 @@ function App() {
       <WardenDashboard
         complaints={complaints}
         onLogout={handleLogout}
+        onUpdateComplaint={handleUpdateComplaint}
+        technicians={technicians}
       />
     );
   }

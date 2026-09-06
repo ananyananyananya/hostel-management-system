@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function raisecomplaint({ onBack, onSubmit }) {
+function RaiseComplaint({ onBack, onSubmit }) {
 
   const [formData, setFormData] = useState({
     title: "",
@@ -27,6 +27,8 @@ function raisecomplaint({ onBack, onSubmit }) {
       ...formData,
       status: "OPEN",
       priority: "PENDING",
+      assignedTechnician: null,
+      resolutionDetails: "",
       createdAt: new Date().toLocaleString(),
     };
 
@@ -37,6 +39,7 @@ function raisecomplaint({ onBack, onSubmit }) {
     <div className="dashboard">
 
       <header className="navbar">
+
         <h1>Smart Hostel</h1>
 
         <button
@@ -45,6 +48,7 @@ function raisecomplaint({ onBack, onSubmit }) {
         >
           Back
         </button>
+
       </header>
 
       <main className="dashboard-content">
@@ -63,6 +67,7 @@ function raisecomplaint({ onBack, onSubmit }) {
           {/* Complaint Title */}
 
           <div className="form-group">
+
             <label>Complaint Title</label>
 
             <input
@@ -73,11 +78,13 @@ function raisecomplaint({ onBack, onSubmit }) {
               placeholder="e.g. Bathroom tap leaking"
               required
             />
+
           </div>
 
           {/* Category */}
 
           <div className="form-group">
+
             <label>Category</label>
 
             <select
@@ -116,11 +123,13 @@ function raisecomplaint({ onBack, onSubmit }) {
               </option>
 
             </select>
+
           </div>
 
           {/* Description */}
 
           <div className="form-group">
+
             <label>Description</label>
 
             <textarea
@@ -131,11 +140,13 @@ function raisecomplaint({ onBack, onSubmit }) {
               rows="5"
               required
             />
+
           </div>
 
           {/* Hostel Block */}
 
           <div className="form-group">
+
             <label>Hostel Block</label>
 
             <select
@@ -162,11 +173,13 @@ function raisecomplaint({ onBack, onSubmit }) {
               </option>
 
             </select>
+
           </div>
 
           {/* Room Number */}
 
           <div className="form-group">
+
             <label>Room Number</label>
 
             <input
@@ -177,6 +190,7 @@ function raisecomplaint({ onBack, onSubmit }) {
               placeholder="e.g. 302"
               required
             />
+
           </div>
 
           {/* Submit */}
@@ -196,4 +210,4 @@ function raisecomplaint({ onBack, onSubmit }) {
   );
 }
 
-export default raisecomplaint;
+export default RaiseComplaint;
