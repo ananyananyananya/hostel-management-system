@@ -487,3 +487,31 @@ body {
     padding: 35px 25px;
   }
 }
+
+/* COMPLAINT FILTERS */
+
+.complaint-filters {
+  display: flex;
+  gap: 10px;
+  margin: 25px 0;
+}
+
+.filter-button {
+  padding: 9px 18px;
+  border: 1px solid #d1d5db;
+  background: white;
+  color: #374151;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.filter-button:hover {
+  background: #f3f4f6;
+}
+
+.filter-button.active {
+  background: #2563eb;
+  color: white;
+  border-color: #2563eb;
+}

@@ -1,9 +1,14 @@
-function wardendashboard({
+import { useState } from "react";
+
+function WardenDashboard({
   complaints,
   onLogout,
-  onUpdateComplaint, 
+  onUpdateComplaint,
   technicians
 }) {
+
+  const [activeFilter, setActiveFilter] = useState("ACTIVE");
+
   const totalComplaints = complaints.length;
 
   const openComplaints = complaints.filter(
@@ -18,8 +23,38 @@ function wardendashboard({
     (complaint) => complaint.status === "RESOLVED"
   ).length;
 
+  /*
+    ACTIVE = everything that is not resolved
+    OPEN = only OPEN complaints
+    PENDING = only IN_PROGRESS complaints
+    RESOLVED = only RESOLVED complaints
+  */
+
+  const filteredComplaints = complaints.filter((complaint) => {
+
+    if (activeFilter === "ACTIVE") {
+      return complaint.status !== "RESOLVED";
+    }
+
+    if (activeFilter === "OPEN") {
+      return complaint.status === "OPEN";
+    }
+
+    if (activeFilter === "PENDING") {
+      return complaint.status === "IN_PROGRESS";
+    }
+
+    if (activeFilter === "RESOLVED") {
+      return complaint.status === "RESOLVED";
+    }
+
+    return true;
+  });
+
   return (
     <div className="dashboard">
+
+      {/* NAVBAR */}
 
       <header className="navbar">
 
@@ -40,6 +75,7 @@ function wardendashboard({
 
       </header>
 
+
       <main className="dashboard-content">
 
         <h2>Warden Dashboard</h2>
@@ -48,7 +84,8 @@ function wardendashboard({
           Monitor and manage hostel maintenance complaints.
         </p>
 
-        {/* Statistics */}
+
+        {/* STATISTICS */}
 
         <div className="stats-container">
 
@@ -64,7 +101,7 @@ function wardendashboard({
 
           <div className="stat-card">
             <h3>{inProgressComplaints}</h3>
-            <p>In Progress</p>
+            <p>Pending</p>
           </div>
 
           <div className="stat-card">
@@ -74,16 +111,79 @@ function wardendashboard({
 
         </div>
 
-        {/* Complaints */}
 
-        <h3>All Complaints</h3>
+        {/* FILTERS */}
 
-        {complaints.length === 0 ? (
+        <div className="complaint-filters">
+
+          <button
+            className={
+              activeFilter === "ACTIVE"
+                ? "filter-button active"
+                : "filter-button"
+            }
+            onClick={() => setActiveFilter("ACTIVE")}
+          >
+            Active
+          </button>
+
+          <button
+            className={
+              activeFilter === "OPEN"
+                ? "filter-button active"
+                : "filter-button"
+            }
+            onClick={() => setActiveFilter("OPEN")}
+          >
+            Open
+          </button>
+
+          <button
+            className={
+              activeFilter === "PENDING"
+                ? "filter-button active"
+                : "filter-button"
+            }
+            onClick={() => setActiveFilter("PENDING")}
+          >
+            Pending
+          </button>
+
+          <button
+            className={
+              activeFilter === "RESOLVED"
+                ? "filter-button active"
+                : "filter-button"
+            }
+            onClick={() => setActiveFilter("RESOLVED")}
+          >
+            Resolved
+          </button>
+
+        </div>
+
+
+        {/* CURRENT SECTION TITLE */}
+
+        <h3>
+          {activeFilter === "ACTIVE" && "Active Complaints"}
+          {activeFilter === "OPEN" && "Open Complaints"}
+          {activeFilter === "PENDING" && "Pending Complaints"}
+          {activeFilter === "RESOLVED" && "Resolved Complaints"}
+        </h3>
+
+
+        {/* COMPLAINTS */}
+
+        {filteredComplaints.length === 0 ? (
 
           <div className="empty-state">
 
             <p>
-              No complaints have been submitted yet.
+              {activeFilter === "RESOLVED"
+                ? "No resolved complaints."
+                : "No complaints in this category."
+              }
             </p>
 
           </div>
@@ -92,185 +192,207 @@ function wardendashboard({
 
           <div className="complaints-list">
 
-            {complaints.map((complaint) => (
+            {filteredComplaints.map((complaint) => (
 
-  <div
-    className="complaint-card"
-    key={complaint.id}
-  >
+              <div
+                className="complaint-card"
+                key={complaint.id}
+              >
 
-    <div className="complaint-header">
+                <div className="complaint-header">
 
-      <h3>{complaint.title}</h3>
+                  <h3>{complaint.title}</h3>
 
-      <span className="status-badge">
-        {complaint.status}
-      </span>
+                  <span className="status-badge">
+                    {complaint.status === "IN_PROGRESS"
+                      ? "PENDING"
+                      : complaint.status
+                    }
+                  </span>
 
-    </div>
+                </div>
 
-    <p>
-      <strong>Category:</strong>{" "}
-      {complaint.category}
-    </p>
 
-    <p>
-      <strong>Location:</strong>{" "}
-      {complaint.hostelBlock}{" - "}
-      {complaint.roomNumber}
-    </p>
+                <p>
+                  <strong>Category:</strong>{" "}
+                  {complaint.category}
+                </p>
 
-    <p>
-      <strong>Description:</strong>{" "}
-      {complaint.description}
-    </p>
 
-    {/* Warden Controls */}
+                <p>
+                  <strong>Location:</strong>{" "}
+                  {complaint.hostelBlock}{" - "}
+                  {complaint.roomNumber}
+                </p>
 
-    <div className="complaint-controls">
 
-      {/* Status */}
+                <p>
+                  <strong>Description:</strong>{" "}
+                  {complaint.description}
+                </p>
 
-      <div className="control-group">
 
-        <label>Status</label>
+                {/* WARDEN CONTROLS */}
 
-        <select
-          value={complaint.status}
-          onChange={(event) =>
-            onUpdateComplaint(
-              complaint.id,
-              {
-                status: event.target.value
-              }
-            )
-          }
-        >
+                <div className="complaint-controls">
 
-          <option value="OPEN">
-            Open
-          </option>
 
-          <option value="IN_PROGRESS">
-            In Progress
-          </option>
+                  {/* STATUS */}
 
-          <option value="RESOLVED">
-            Resolved
-          </option>
+                  <div className="control-group">
 
-        </select>
+                    <label>Status</label>
 
-      </div>
+                    <select
+                      value={complaint.status}
+                      onChange={(event) =>
+                        onUpdateComplaint(
+                          complaint.id,
+                          {
+                            status: event.target.value
+                          }
+                        )
+                      }
+                    >
 
-      {/* Priority */}
+                      <option value="OPEN">
+                        Open
+                      </option>
 
-      <div className="control-group">
+                      <option value="IN_PROGRESS">
+                        Pending
+                      </option>
 
-        <label>Priority</label>
+                      <option value="RESOLVED">
+                        Resolved
+                      </option>
 
-        <select
-          value={complaint.priority}
-          onChange={(event) =>
-            onUpdateComplaint(
-              complaint.id,
-              {
-                priority: event.target.value
-              }
-            )
-          }
-        >
+                    </select>
 
-          <option value="PENDING">
-            Pending
-          </option>
+                  </div>
 
-          <option value="LOW">
-            Low
-          </option>
 
-          <option value="MEDIUM">
-            Medium
-          </option>
+                  {/* PRIORITY */}
 
-          <option value="HIGH">
-            High
-          </option>
+                  <div className="control-group">
 
-          <option value="CRITICAL">
-            Critical
-          </option>
+                    <label>Priority</label>
 
-        </select>
+                    <select
+                      value={complaint.priority}
+                      onChange={(event) =>
+                        onUpdateComplaint(
+                          complaint.id,
+                          {
+                            priority: event.target.value
+                          }
+                        )
+                      }
+                    >
 
-      </div>
+                      <option value="PENDING">
+                        Pending
+                      </option>
 
-      {/* Technician */}
+                      <option value="LOW">
+                        Low
+                      </option>
 
-      <div className="control-group">
+                      <option value="MEDIUM">
+                        Medium
+                      </option>
 
-        <label>Technician</label>
+                      <option value="HIGH">
+                        High
+                      </option>
 
-        <select
-          value={complaint.assignedTechnician || ""}
-          onChange={(event) =>
-            onUpdateComplaint(
-              complaint.id,
-              {
-                assignedTechnician:
-                  event.target.value === ""
-                    ? null
-                    : Number(event.target.value)
-              }
-            )
-          }
-        >
+                      <option value="CRITICAL">
+                        Critical
+                      </option>
 
-          <option value="">
-            Unassigned
-          </option>
+                    </select>
 
-          {technicians.map((tech) => (
+                  </div>
 
-            <option
-              key={tech.id}
-              value={tech.id}
-            >
-              {tech.name} - {tech.specialization}
-            </option>
 
-          ))}
+                  {/* TECHNICIAN */}
 
-        </select>
+                  <div className="control-group">
 
-      </div>
+                    <label>Technician</label>
 
-    </div>
+                    <select
+                      value={
+                        complaint.assignedTechnician || ""
+                      }
+                      onChange={(event) =>
+                        onUpdateComplaint(
+                          complaint.id,
+                          {
+                            assignedTechnician:
+                              event.target.value === ""
+                                ? null
+                                : Number(event.target.value)
+                          }
+                        )
+                      }
+                    >
 
-    {/* Show assigned technician */}
+                      <option value="">
+                        Unassigned
+                      </option>
 
-    {complaint.assignedTechnician && (
+                      {technicians.map((tech) => (
 
-      <p>
-        <strong>Assigned Technician:</strong>{" "}
-        {
-          technicians.find(
-            (tech) =>
-              tech.id === complaint.assignedTechnician
-          )?.name
-        }
-      </p>
+                        <option
+                          key={tech.id}
+                          value={tech.id}
+                        >
+                          {tech.name} -{" "}
+                          {tech.specialization}
+                        </option>
 
-    )}
+                      ))}
 
-    <p>
-      <strong>Submitted:</strong>{" "}
-      {complaint.createdAt}
-    </p>
+                    </select>
 
-  </div>
+                  </div>
 
-))}
+                </div>
+
+
+                {/* ASSIGNED TECHNICIAN */}
+
+                {complaint.assignedTechnician && (
+
+                  <p>
+                    <strong>
+                      Assigned Technician:
+                    </strong>{" "}
+
+                    {
+                      technicians.find(
+                        (tech) =>
+                          tech.id ===
+                          complaint.assignedTechnician
+                      )?.name
+                    }
+
+                  </p>
+
+                )}
+
+
+                {/* SUBMITTED */}
+
+                <p>
+                  <strong>Submitted:</strong>{" "}
+                  {complaint.createdAt}
+                </p>
+
+              </div>
+
+            ))}
 
           </div>
 
@@ -282,4 +404,4 @@ function wardendashboard({
   );
 }
 
-export default wardendashboard;
+export default WardenDashboard;
