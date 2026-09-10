@@ -1,11 +1,20 @@
-function login({ onLogin }) {
+function Login({ onLogin, technicians }) {
 
   const handleSubmit = (event) => {
+
     event.preventDefault();
 
     const role = event.target.role.value;
 
-    onLogin(role);
+    let technicianId = null;
+
+    if (role === "technician") {
+      technicianId = Number(
+        event.target.technician.value
+      );
+    }
+
+    onLogin(role, technicianId);
   };
 
   return (
@@ -16,10 +25,13 @@ function login({ onLogin }) {
         <h1>Smart Hostel</h1>
 
         <p className="subtitle">
-          Hostel Complaint Management System
+          Hostel Maintenance Management System
         </p>
 
+
         <form onSubmit={handleSubmit}>
+
+          {/* EMAIL */}
 
           <div className="form-group">
 
@@ -27,11 +39,14 @@ function login({ onLogin }) {
 
             <input
               type="email"
-              placeholder="Enter your college email ID"
+              placeholder="Enter your email"
               required
             />
 
           </div>
+
+
+          {/* PASSWORD */}
 
           <div className="form-group">
 
@@ -45,15 +60,17 @@ function login({ onLogin }) {
 
           </div>
 
+
+          {/* ROLE */}
+
           <div className="form-group">
 
             <label>Login as</label>
 
-            <select name="role" defaultValue="select">
-
-              <option value="select" disabled>
-                Select Role
-              </option>
+            <select
+              name="role"
+              defaultValue="student"
+            >
 
               <option value="student">
                 Student
@@ -63,15 +80,48 @@ function login({ onLogin }) {
                 Warden
               </option>
 
+              <option value="technician">
+                Technician
+              </option>
+
             </select>
 
           </div>
+
+
+          {/* TECHNICIAN SELECTION */}
+
+          <div className="form-group">
+
+            <label>Technician</label>
+
+            <select
+              name="technician"
+              defaultValue="1"
+            >
+
+              {technicians.map((tech) => (
+
+                <option
+                  key={tech.id}
+                  value={tech.id}
+                >
+                  {tech.name} - {tech.specialization}
+                </option>
+
+              ))}
+
+            </select>
+
+          </div>
+
 
           <button type="submit">
             Login
           </button>
 
         </form>
+
 
         <p className="register-text">
           Don't have an account? <span>Register</span>
@@ -83,4 +133,4 @@ function login({ onLogin }) {
   );
 }
 
-export default login;
+export default Login;

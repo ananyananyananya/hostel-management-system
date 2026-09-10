@@ -136,7 +136,7 @@ function RaiseComplaint({ onBack, onSubmit }) {
               name="description"
               value={formData.description}
               onChange={handleChange}
-              placeholder="Describe the issue in detail..."
+              placeholder="Describe the issue in detail."
               rows="5"
               required
             />

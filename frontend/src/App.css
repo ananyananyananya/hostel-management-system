@@ -515,3 +515,33 @@ body {
   color: white;
   border-color: #2563eb;
 }
+
+/* TECHNICIAN DASHBOARD */
+
+.resolution-section {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.resolution-section h4 {
+  margin-top: 0;
+}
+
+.resolution-section textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 14px;
+  resize: vertical;
+  margin-bottom: 12px;
+}
+
+.resolution-display {
+  margin-top: 20px;
+  padding: 15px;
+  background: #f3f4f6;
+  border-radius: 8px;
+}

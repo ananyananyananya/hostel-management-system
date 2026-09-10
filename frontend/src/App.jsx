@@ -4,8 +4,10 @@ import Login from "./pages/login";
 import StudentDashboard from "./pages/studentdashboard";
 import RaiseComplaint from "./pages/raisecomplaint";
 import WardenDashboard from "./pages/wardendashboard";
+import TechnicianDashboard from "./pages/techniciandashboard";
 
 import "./App.css";
+
 
 const technicians = [
   {
@@ -25,94 +27,177 @@ const technicians = [
   }
 ];
 
+
 function App() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const [role, setRole] = useState("student");
 
-  const [currentPage, setCurrentPage] = useState("dashboard");
+  const [technicianId, setTechnicianId] = useState(null);
+
+  const [currentPage, setCurrentPage] =
+    useState("dashboard");
 
   const [complaints, setComplaints] = useState([]);
 
-  const handleLogin = (selectedRole) => {
+
+  /* LOGIN */
+
+  const handleLogin = (
+    selectedRole,
+    selectedTechnicianId
+  ) => {
+
     setRole(selectedRole);
+
+    setTechnicianId(
+      selectedTechnicianId
+    );
+
     setIsLoggedIn(true);
+
     setCurrentPage("dashboard");
   };
+
+
+  /* LOGOUT */
 
   const handleLogout = () => {
+
     setIsLoggedIn(false);
+
     setCurrentPage("dashboard");
+
+    setTechnicianId(null);
   };
 
+
+  /* STUDENT */
+
   const handleRaiseComplaint = () => {
+
     setCurrentPage("raise-complaint");
   };
 
+
   const handleBackToDashboard = () => {
+
     setCurrentPage("dashboard");
   };
+
 
   const handleSubmitComplaint = (complaint) => {
 
     setComplaints([
       ...complaints,
-      complaint,
+      complaint
     ]);
 
     setCurrentPage("dashboard");
   };
 
-  const handleUpdateComplaint = (complaintId, updates) => {
 
-  setComplaints(
-    complaints.map((complaint) =>
-      complaint.id === complaintId
-        ? { ...complaint, ...updates }
-        : complaint
-    )
-  );
-};
+  /* UPDATE COMPLAINT */
+
+  const handleUpdateComplaint = (
+    complaintId,
+    updates
+  ) => {
+
+    setComplaints(
+      complaints.map((complaint) =>
+        complaint.id === complaintId
+          ? {
+              ...complaint,
+              ...updates
+            }
+          : complaint
+      )
+    );
+  };
+
+
+  /* NOT LOGGED IN */
 
   if (!isLoggedIn) {
+
     return (
       <Login
         onLogin={handleLogin}
-      />
-    );
-  }
-
-  if (
-    role === "student" &&
-    currentPage === "raise-complaint"
-  ) {
-    return (
-      <RaiseComplaint
-        onBack={handleBackToDashboard}
-        onSubmit={handleSubmitComplaint}
-      />
-    );
-  }
-
-  if (role === "warden") {
-    return (
-      <WardenDashboard
-        complaints={complaints}
-        onLogout={handleLogout}
-        onUpdateComplaint={handleUpdateComplaint}
         technicians={technicians}
       />
     );
   }
 
+
+  /* STUDENT - RAISE COMPLAINT */
+
+  if (
+    role === "student" &&
+    currentPage === "raise-complaint"
+  ) {
+
+    return (
+      <RaiseComplaint
+        onBack={
+          handleBackToDashboard
+        }
+        onSubmit={
+          handleSubmitComplaint
+        }
+      />
+    );
+  }
+
+
+  /* WARDEN */
+
+  if (role === "warden") {
+
+    return (
+      <WardenDashboard
+        complaints={complaints}
+        onLogout={handleLogout}
+        onUpdateComplaint={
+          handleUpdateComplaint
+        }
+        technicians={technicians}
+      />
+    );
+  }
+
+
+  /* TECHNICIAN */
+
+  if (role === "technician") {
+
+    return (
+      <TechnicianDashboard
+        complaints={complaints}
+        technicians={technicians}
+        technicianId={technicianId}
+        onLogout={handleLogout}
+        onUpdateComplaint={
+          handleUpdateComplaint
+        }
+      />
+    );
+  }
+
+
+  /* STUDENT DASHBOARD */
+
   return (
     <StudentDashboard
       onLogout={handleLogout}
-      onRaiseComplaint={handleRaiseComplaint}
+      onRaiseComplaint={
+        handleRaiseComplaint
+      }
       complaints={complaints}
     />
   );
 }
+
 
 export default App;
