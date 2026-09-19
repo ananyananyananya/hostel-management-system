@@ -22,15 +22,18 @@ function RaiseComplaint({ onBack, onSubmit }) {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const complaint = {
-      id: Date.now(),
-      ...formData,
-      status: "OPEN",
-      priority: "PENDING",
-      assignedTechnician: null,
-      resolutionDetails: "",
-      createdAt: new Date().toLocaleString(),
-    };
+  const complaint = {
+    id: Date.now(),
+    ...formData,
+    status: "OPEN",
+    priority: "PENDING",
+    assignedTechnician: null,
+    resolutionDetails: "",
+    followUpRequested: false,
+    followUpReason: "",
+    followUpCount: 0,
+    createdAt: new Date().toLocaleString(),
+  };
 
     onSubmit(complaint);
   };

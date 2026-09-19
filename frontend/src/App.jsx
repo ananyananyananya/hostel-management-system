@@ -185,6 +185,45 @@ const handleCompleteComplaint = (complaintId) => {
   );
 };
 
+const handleFollowUpComplaint = (
+  complaintId,
+  followUpReason
+) => {
+
+  setComplaints(
+    complaints.map((complaint) => {
+
+      if (complaint.id !== complaintId) {
+        return complaint;
+      }
+
+      // Follow-up can only be requested after resolution
+      if (complaint.status !== "RESOLVED") {
+        return complaint;
+      }
+
+      return {
+        ...complaint,
+
+        // Send it back into the active workflow
+        status: "PENDING",
+
+        // Keep the technician assigned
+        assignedTechnician:
+          complaint.assignedTechnician,
+
+        // Record the follow-up
+        followUpRequested: true,
+        followUpReason: followUpReason,
+
+        followUpCount:
+          (complaint.followUpCount || 0) + 1
+      };
+
+    })
+  );
+};
+
   /* NOT LOGGED IN */
 
   if (!isLoggedIn) {
@@ -260,6 +299,7 @@ if (role === "technician") {
       onRaiseComplaint={handleRaiseComplaint}
       complaints={complaints}
       onCompleteComplaint={handleCompleteComplaint}
+      onFollowUpComplaint={handleFollowUpComplaint}
     />
   );
 }

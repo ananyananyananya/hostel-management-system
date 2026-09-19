@@ -542,3 +542,50 @@ body {
   background: #f3f4f6;
   border-radius: 8px;
 }
+
+/* FOLLOW-UP */
+
+.resolution-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.secondary-button {
+  padding: 10px 16px;
+  border: 1px solid #2563eb;
+  background: white;
+  color: #2563eb;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.secondary-button:hover {
+  background: #eff6ff;
+}
+
+.follow-up-section {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.follow-up-section h4 {
+  margin-top: 0;
+}
+
+.follow-up-section p {
+  color: #6b7280;
+}
+
+.follow-up-section textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 14px;
+  resize: vertical;
+  margin-bottom: 12px;
+}

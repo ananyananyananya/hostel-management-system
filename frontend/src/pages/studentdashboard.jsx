@@ -4,10 +4,18 @@ function StudentDashboard({
   onLogout,
   onRaiseComplaint,
   complaints,
-  onCompleteComplaint
+  onCompleteComplaint,
+  onFollowUpComplaint
 }) {
 
-  const [activeFilter, setActiveFilter] = useState("ACTIVE");
+  const [activeFilter, setActiveFilter] =
+    useState("ACTIVE");
+
+  const [followUpText, setFollowUpText] =
+    useState({});
+
+  const [followUpOpen, setFollowUpOpen] =
+    useState({});
 
 
   /*
@@ -21,8 +29,8 @@ function StudentDashboard({
     Student has verified the repair
   */
 
-  const filteredComplaints = complaints.filter(
-    (complaint) => {
+  const filteredComplaints =
+    complaints.filter((complaint) => {
 
       if (activeFilter === "ACTIVE") {
         return (
@@ -40,8 +48,73 @@ function StudentDashboard({
       }
 
       return true;
+    });
+
+
+  /* Open/close follow-up form */
+
+  const toggleFollowUp = (complaintId) => {
+
+    setFollowUpOpen({
+      ...followUpOpen,
+      [complaintId]:
+        !followUpOpen[complaintId]
+    });
+
+  };
+
+
+  /* Store follow-up text */
+
+  const handleFollowUpTextChange = (
+    complaintId,
+    value
+  ) => {
+
+    setFollowUpText({
+      ...followUpText,
+      [complaintId]: value
+    });
+
+  };
+
+
+  /* Submit follow-up */
+
+  const handleSubmitFollowUp = (
+    complaintId
+  ) => {
+
+    const reason =
+      followUpText[complaintId]?.trim();
+
+    if (!reason) {
+
+      alert(
+        "Please describe the issue before submitting a follow-up request."
+      );
+
+      return;
     }
-  );
+
+    onFollowUpComplaint(
+      complaintId,
+      reason
+    );
+
+    // Close the form
+    setFollowUpOpen({
+      ...followUpOpen,
+      [complaintId]: false
+    });
+
+    // Clear text
+    setFollowUpText({
+      ...followUpText,
+      [complaintId]: ""
+    });
+
+  };
 
 
   return (
@@ -85,8 +158,9 @@ function StudentDashboard({
           <h3>Need something fixed?</h3>
 
           <p>
-            Report a hostel maintenance issue and
-            track its progress until it is completed.
+            Report a hostel maintenance issue
+            and track its progress until it is
+            completed.
           </p>
 
           <button
@@ -166,7 +240,7 @@ function StudentDashboard({
         </h3>
 
 
-        {/* COMPLAINT LIST */}
+        {/* COMPLAINTS */}
 
         {filteredComplaints.length === 0 ? (
 
@@ -212,10 +286,7 @@ function StudentDashboard({
 
                     <span className="status-badge">
 
-                      {complaint.status === "PENDING"
-                        ? "PENDING"
-                        : complaint.status
-                      }
+                      {complaint.status}
 
                     </span>
 
@@ -249,7 +320,7 @@ function StudentDashboard({
                   </p>
 
 
-                  {/* TECHNICIAN RESOLUTION */}
+                  {/* RESOLVED */}
 
                   {complaint.status === "RESOLVED" && (
 
@@ -260,22 +331,88 @@ function StudentDashboard({
                           Resolution:
                         </strong>{" "}
 
-                        {complaint.resolutionDetails
-                          || "No resolution details provided."
+                        {complaint.resolutionDetails ||
+                          "No resolution details provided."
                         }
 
                       </p>
 
-                      <button
-                        className="primary-button"
-                        onClick={() =>
-                          onCompleteComplaint(
-                            complaint.id
-                          )
-                        }
-                      >
-                        Mark as Completed
-                      </button>
+
+                      <div className="resolution-actions">
+
+                        <button
+                          className="primary-button"
+                          onClick={() =>
+                            onCompleteComplaint(
+                              complaint.id
+                            )
+                          }
+                        >
+                          Mark as Completed
+                        </button>
+
+
+                        <button
+                          className="secondary-button"
+                          onClick={() =>
+                            toggleFollowUp(
+                              complaint.id
+                            )
+                          }
+                        >
+                          Request Follow-up
+                        </button>
+
+                      </div>
+
+
+                      {/* FOLLOW-UP FORM */}
+
+                      {followUpOpen[
+                        complaint.id
+                      ] && (
+
+                        <div className="follow-up-section">
+
+                          <h4>
+                            Request Follow-up
+                          </h4>
+
+                          <p>
+                            Tell us what is still
+                            wrong with the issue.
+                          </p>
+
+                          <textarea
+                            value={
+                              followUpText[
+                                complaint.id
+                              ] || ""
+                            }
+                            onChange={(event) =>
+                              handleFollowUpTextChange(
+                                complaint.id,
+                                event.target.value
+                              )
+                            }
+                            placeholder="e.g. The fan is still making the same noise..."
+                            rows="4"
+                          />
+
+                          <button
+                            className="primary-button"
+                            onClick={() =>
+                              handleSubmitFollowUp(
+                                complaint.id
+                              )
+                            }
+                          >
+                            Submit Follow-up
+                          </button>
+
+                        </div>
+
+                      )}
 
                     </div>
 
@@ -293,8 +430,8 @@ function StudentDashboard({
                           Resolution:
                         </strong>{" "}
 
-                        {complaint.resolutionDetails
-                          || "No resolution details provided."
+                        {complaint.resolutionDetails ||
+                          "No resolution details provided."
                         }
 
                       </p>
@@ -302,6 +439,32 @@ function StudentDashboard({
                       <p>
                         You have verified that the
                         issue has been resolved.
+                      </p>
+
+                    </div>
+
+                  )}
+
+
+                  {/* FOLLOW-UP NOTICE */}
+
+                  {complaint.status === "PENDING" &&
+                    complaint.followUpRequested && (
+
+                    <div className="resolution-display">
+
+                      <p>
+                        <strong>
+                          Follow-up requested:
+                        </strong>{" "}
+
+                        {complaint.followUpReason}
+
+                      </p>
+
+                      <p>
+                        The issue has been sent back
+                        for further attention.
                       </p>
 
                     </div>
