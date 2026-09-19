@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 function WardenDashboard({
   complaints,
   onLogout,
@@ -6,23 +8,136 @@ function WardenDashboard({
   technicians
 }) {
 
-  const totalComplaints = complaints.length;
+  const [activeFilter, setActiveFilter] =
+    useState("ACTIVE");
 
-  const openComplaints = complaints.filter(
-    (complaint) => complaint.status === "OPEN"
-  ).length;
 
-  const pendingComplaints = complaints.filter(
-    (complaint) => complaint.status === "PENDING"
-  ).length;
+  /* -----------------------------
+     STATISTICS
+  ----------------------------- */
 
-  const resolvedComplaints = complaints.filter(
-    (complaint) => complaint.status === "RESOLVED"
-  ).length;
+  const totalComplaints =
+    complaints.length;
 
-  const completedComplaints = complaints.filter(
-    (complaint) => complaint.status === "COMPLETED"
-  ).length;
+  const openComplaints =
+    complaints.filter(
+      (complaint) =>
+        complaint.status === "OPEN"
+    ).length;
+
+  const pendingComplaints =
+    complaints.filter(
+      (complaint) =>
+        complaint.status === "PENDING"
+    ).length;
+
+  const resolvedComplaints =
+    complaints.filter(
+      (complaint) =>
+        complaint.status === "RESOLVED"
+    ).length;
+
+  const completedComplaints =
+    complaints.filter(
+      (complaint) =>
+        complaint.status === "COMPLETED"
+    ).length;
+
+
+  /* -----------------------------
+     FILTER COMPLAINTS
+  ----------------------------- */
+
+  const filteredComplaints =
+    complaints.filter((complaint) => {
+
+      if (activeFilter === "ACTIVE") {
+        return (
+          complaint.status === "OPEN" ||
+          complaint.status === "PENDING"
+        );
+      }
+
+      if (activeFilter === "OPEN") {
+        return complaint.status === "OPEN";
+      }
+
+      if (activeFilter === "PENDING") {
+        return complaint.status === "PENDING";
+      }
+
+      if (activeFilter === "RESOLVED") {
+        return complaint.status === "RESOLVED";
+      }
+
+      if (activeFilter === "COMPLETED") {
+        return complaint.status === "COMPLETED";
+      }
+
+      return true;
+    });
+
+
+  /* -----------------------------
+     SECTION TITLE
+  ----------------------------- */
+
+  const getSectionTitle = () => {
+
+    if (activeFilter === "ACTIVE") {
+      return "Active Complaints";
+    }
+
+    if (activeFilter === "OPEN") {
+      return "Open Complaints";
+    }
+
+    if (activeFilter === "PENDING") {
+      return "Pending Complaints";
+    }
+
+    if (activeFilter === "RESOLVED") {
+      return "Resolved Complaints";
+    }
+
+    if (activeFilter === "COMPLETED") {
+      return "Completed Complaints";
+    }
+
+    return "Complaints";
+  };
+
+
+  /* -----------------------------
+     FILTER BUTTON
+  ----------------------------- */
+
+  const FilterButton = ({
+    value,
+    label,
+    count
+  }) => (
+
+    <button
+      className={
+        activeFilter === value
+          ? "filter-button active"
+          : "filter-button"
+      }
+      onClick={() =>
+        setActiveFilter(value)
+      }
+    >
+      {label}
+
+      <span className="filter-count">
+        {count}
+      </span>
+
+    </button>
+
+  );
+
 
   return (
     <div className="dashboard">
@@ -63,23 +178,54 @@ function WardenDashboard({
         <div className="stats-container">
 
           <div className="stat-card">
-            <h3>{totalComplaints}</h3>
-            <p>Total Complaints</p>
+
+            <h3>
+              {totalComplaints}
+            </h3>
+
+            <p>
+              Total Complaints
+            </p>
+
           </div>
 
-          <div className="stat-card">
-            <h3>{openComplaints}</h3>
-            <p>Open</p>
-          </div>
 
           <div className="stat-card">
-            <h3>{pendingComplaints}</h3>
-            <p>Pending</p>
+
+            <h3>
+              {openComplaints}
+            </h3>
+
+            <p>
+              Open
+            </p>
+
           </div>
 
+
           <div className="stat-card">
-            <h3>{resolvedComplaints}</h3>
-            <p>Resolved</p>
+
+            <h3>
+              {pendingComplaints}
+            </h3>
+
+            <p>
+              Pending
+            </p>
+
+          </div>
+
+
+          <div className="stat-card">
+
+            <h3>
+              {resolvedComplaints}
+            </h3>
+
+            <p>
+              Resolved
+            </p>
+
           </div>
 
         </div>
@@ -89,48 +235,76 @@ function WardenDashboard({
 
         <div className="complaint-filters">
 
-          <button
-            className="filter-button active"
-          >
-            Active
-          </button>
+          <FilterButton
+            value="ACTIVE"
+            label="Active"
+            count={
+              openComplaints +
+              pendingComplaints
+            }
+          />
 
-          <button
-            className="filter-button"
-          >
-            Open
-          </button>
+          <FilterButton
+            value="OPEN"
+            label="Open"
+            count={openComplaints}
+          />
 
-          <button
-            className="filter-button"
-          >
-            Pending
-          </button>
+          <FilterButton
+            value="PENDING"
+            label="Pending"
+            count={pendingComplaints}
+          />
 
-          <button
-            className="filter-button"
-          >
-            Resolved
-          </button>
+          <FilterButton
+            value="RESOLVED"
+            label="Resolved"
+            count={resolvedComplaints}
+          />
 
-          <button
-            className="filter-button"
-          >
-            Completed
-          </button>
+          <FilterButton
+            value="COMPLETED"
+            label="Completed"
+            count={completedComplaints}
+          />
 
         </div>
 
 
-        <h3>All Complaints</h3>
+        {/* SECTION TITLE */}
+
+        <h3>
+          {getSectionTitle()}
+        </h3>
 
 
-        {complaints.length === 0 ? (
+        {/* EMPTY STATE */}
+
+        {filteredComplaints.length === 0 ? (
 
           <div className="empty-state">
 
             <p>
-              No complaints have been submitted yet.
+              {activeFilter === "ACTIVE" &&
+                "There are no active complaints."
+              }
+
+              {activeFilter === "OPEN" &&
+                "There are no open complaints."
+              }
+
+              {activeFilter === "PENDING" &&
+                "There are no pending complaints."
+              }
+
+              {activeFilter === "RESOLVED" &&
+                "There are no resolved complaints."
+              }
+
+              {activeFilter === "COMPLETED" &&
+                "There are no completed complaints."
+              }
+
             </p>
 
           </div>
@@ -139,202 +313,234 @@ function WardenDashboard({
 
           <div className="complaints-list">
 
-            {complaints.map((complaint) => (
+            {filteredComplaints.map(
+              (complaint) => (
 
-              <div
-                className="complaint-card"
-                key={complaint.id}
-              >
+                <div
+                  className="complaint-card"
+                  key={complaint.id}
+                >
 
-                {/* HEADER */}
+                  {/* HEADER */}
 
-                <div className="complaint-header">
+                  <div className="complaint-header">
 
-                  <h3>{complaint.title}</h3>
+                    <h3>
+                      {complaint.title}
+                    </h3>
 
-                  <span className="status-badge">
+                    <span className="status-badge">
 
-                    {complaint.status}
-
-                  </span>
-
-                </div>
-
-
-                {/* BASIC DETAILS */}
-
-                <p>
-                  <strong>Category:</strong>{" "}
-                  {complaint.category}
-                </p>
-
-
-                <p>
-                  <strong>Location:</strong>{" "}
-                  {complaint.hostelBlock}{" - "}
-                  {complaint.roomNumber}
-                </p>
-
-
-                <p>
-                  <strong>Description:</strong>{" "}
-                  {complaint.description}
-                </p>
-
-
-                {/* WARDEN CONTROLS */}
-
-                <div className="complaint-controls">
-
-                  {/* PRIORITY */}
-
-                  <div className="control-group">
-
-                    <label>Priority</label>
-
-                    <select
-                      value={complaint.priority}
-                      onChange={(event) =>
-                        onUpdateComplaint(
-                          complaint.id,
-                          {
-                            priority:
-                              event.target.value
-                          }
-                        )
+                      {complaint.status ===
+                        "IN_PROGRESS"
+                        ? "PENDING"
+                        : complaint.status
                       }
-                    >
 
-                      <option value="PENDING">
-                        Pending
-                      </option>
-
-                      <option value="LOW">
-                        Low
-                      </option>
-
-                      <option value="MEDIUM">
-                        Medium
-                      </option>
-
-                      <option value="HIGH">
-                        High
-                      </option>
-
-                      <option value="CRITICAL">
-                        Critical
-                      </option>
-
-                    </select>
+                    </span>
 
                   </div>
 
 
-                  {/* TECHNICIAN */}
+                  {/* DETAILS */}
 
-                  <div className="control-group">
+                  <p>
+                    <strong>
+                      Category:
+                    </strong>{" "}
 
-                    <label>Technician</label>
+                    {complaint.category}
 
-                    <select
-                      value={
-                        complaint.assignedTechnician || ""
-                      }
-                      onChange={(event) => {
+                  </p>
 
-                        const technicianId =
-                          event.target.value === ""
-                            ? null
-                            : Number(
+
+                  <p>
+
+                    <strong>
+                      Location:
+                    </strong>{" "}
+
+                    {complaint.hostelBlock}
+                    {" - "}
+                    {complaint.roomNumber}
+
+                  </p>
+
+
+                  <p>
+
+                    <strong>
+                      Description:
+                    </strong>{" "}
+
+                    {complaint.description}
+
+                  </p>
+
+
+                  {/* WARDEN CONTROLS */}
+
+                  <div className="complaint-controls">
+
+                    {/* PRIORITY */}
+
+                    <div className="control-group">
+
+                      <label>
+                        Priority
+                      </label>
+
+                      <select
+                        value={
+                          complaint.priority
+                        }
+                        onChange={(event) =>
+                          onUpdateComplaint(
+                            complaint.id,
+                            {
+                              priority:
                                 event.target.value
-                              );
+                            }
+                          )
+                        }
+                      >
 
-                        onAssignTechnician(
-                          complaint.id,
-                          technicianId
-                        );
-
-                      }}
-                    >
-
-                      <option value="">
-                        Unassigned
-                      </option>
-
-                      {technicians.map((tech) => (
-
-                        <option
-                          key={tech.id}
-                          value={tech.id}
-                        >
-                          {tech.name} -{" "}
-                          {tech.specialization}
+                        <option value="PENDING">
+                          Pending
                         </option>
 
-                      ))}
+                        <option value="LOW">
+                          Low
+                        </option>
 
-                    </select>
+                        <option value="MEDIUM">
+                          Medium
+                        </option>
+
+                        <option value="HIGH">
+                          High
+                        </option>
+
+                        <option value="CRITICAL">
+                          Critical
+                        </option>
+
+                      </select>
+
+                    </div>
+
+
+                    {/* TECHNICIAN */}
+
+                    <div className="control-group">
+
+                      <label>
+                        Technician
+                      </label>
+
+                      <select
+                        value={
+                          complaint.assignedTechnician ||
+                          ""
+                        }
+                        onChange={(event) => {
+
+                          const technicianId =
+                            event.target.value === ""
+                              ? null
+                              : Number(
+                                  event.target.value
+                                );
+
+                          onAssignTechnician(
+                            complaint.id,
+                            technicianId
+                          );
+
+                        }}
+                      >
+
+                        <option value="">
+                          Unassigned
+                        </option>
+
+                        {technicians.map(
+                          (tech) => (
+
+                            <option
+                              key={tech.id}
+                              value={tech.id}
+                            >
+                              {tech.name} -{" "}
+                              {tech.specialization}
+                            </option>
+
+                          )
+                        )}
+
+                      </select>
+
+                    </div>
 
                   </div>
 
+
+                  {/* ASSIGNED TECHNICIAN */}
+
+                  {complaint.assignedTechnician && (
+
+                    <p>
+
+                      <strong>
+                        Assigned Technician:
+                      </strong>{" "}
+
+                      {
+                        technicians.find(
+                          (tech) =>
+                            tech.id ===
+                            complaint.assignedTechnician
+                        )?.name
+                      }
+
+                    </p>
+
+                  )}
+
+
+                  {/* RESOLUTION */}
+
+                  {complaint.resolutionDetails && (
+
+                    <p>
+
+                      <strong>
+                        Resolution:
+                      </strong>{" "}
+
+                      {complaint.resolutionDetails}
+
+                    </p>
+
+                  )}
+
+
+                  {/* SUBMITTED */}
+
+                  <p>
+
+                    <strong>
+                      Submitted:
+                    </strong>{" "}
+
+                    {complaint.createdAt}
+
+                  </p>
+
                 </div>
 
-
-                {/* ASSIGNED TECHNICIAN */}
-
-                {complaint.assignedTechnician && (
-
-                  <p>
-
-                    <strong>
-                      Assigned Technician:
-                    </strong>{" "}
-
-                    {
-                      technicians.find(
-                        (tech) =>
-                          tech.id ===
-                          complaint.assignedTechnician
-                      )?.name
-                    }
-
-                  </p>
-
-                )}
-
-
-                {/* RESOLUTION */}
-
-                {complaint.resolutionDetails && (
-
-                  <p>
-
-                    <strong>
-                      Resolution:
-                    </strong>{" "}
-
-                    {complaint.resolutionDetails}
-
-                  </p>
-
-                )}
-
-
-                {/* SUBMITTED */}
-
-                <p>
-
-                  <strong>
-                    Submitted:
-                  </strong>{" "}
-
-                  {complaint.createdAt}
-
-                </p>
-
-              </div>
-
-            ))}
+              )
+            )}
 
           </div>
 

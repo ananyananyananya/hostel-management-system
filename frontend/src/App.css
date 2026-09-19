@@ -589,3 +589,9 @@ body {
   resize: vertical;
   margin-bottom: 12px;
 }
+
+.filter-count {
+  margin-left: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}

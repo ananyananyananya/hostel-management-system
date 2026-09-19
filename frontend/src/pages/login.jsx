@@ -1,21 +1,58 @@
+import { useState } from "react";
+
 function Login({ onLogin, technicians }) {
+
+  const [role, setRole] = useState("student");
+
+  const [email, setEmail] = useState("");
+
+  const [password, setPassword] = useState("");
+
+  const [technicianId, setTechnicianId] = useState(
+    technicians[0]?.id || ""
+  );
+
 
   const handleSubmit = (event) => {
 
     event.preventDefault();
 
-    const role = event.target.role.value;
-
-    let technicianId = null;
-
-    if (role === "technician") {
-      technicianId = Number(
-        event.target.technician.value
-      );
+    if (!email || !password) {
+      alert("Please enter your email and password.");
+      return;
     }
 
-    onLogin(role, technicianId);
+    if (role === "technician" && !technicianId) {
+      alert("Please select a technician.");
+      return;
+    }
+
+    const selectedTechnicianId =
+      role === "technician"
+        ? Number(technicianId)
+        : null;
+
+    onLogin(
+      role,
+      selectedTechnicianId
+    );
   };
+
+
+  const handleRoleChange = (event) => {
+
+    const selectedRole = event.target.value;
+
+    setRole(selectedRole);
+
+    // Reset technician selection when changing roles
+    if (selectedRole !== "technician") {
+      setTechnicianId(
+        technicians[0]?.id || ""
+      );
+    }
+  };
+
 
   return (
     <div className="login-page">
@@ -35,12 +72,18 @@ function Login({ onLogin, technicians }) {
 
           <div className="form-group">
 
-            <label>Email</label>
+            <label htmlFor="email">
+              Email
+            </label>
 
             <input
+              id="email"
               type="email"
+              value={email}
+              onChange={(event) =>
+                setEmail(event.target.value)
+              }
               placeholder="Enter your email"
-              required
             />
 
           </div>
@@ -50,12 +93,18 @@ function Login({ onLogin, technicians }) {
 
           <div className="form-group">
 
-            <label>Password</label>
+            <label htmlFor="password">
+              Password
+            </label>
 
             <input
+              id="password"
               type="password"
+              value={password}
+              onChange={(event) =>
+                setPassword(event.target.value)
+              }
               placeholder="Enter your password"
-              required
             />
 
           </div>
@@ -65,11 +114,14 @@ function Login({ onLogin, technicians }) {
 
           <div className="form-group">
 
-            <label>Login as</label>
+            <label htmlFor="role">
+              Login as
+            </label>
 
             <select
-              name="role"
-              defaultValue="student"
+              id="role"
+              value={role}
+              onChange={handleRoleChange}
             >
 
               <option value="student">
@@ -89,32 +141,46 @@ function Login({ onLogin, technicians }) {
           </div>
 
 
-          {/* TECHNICIAN SELECTION */}
+          {/* TECHNICIAN */}
 
-          <div className="form-group">
+          {role === "technician" && (
 
-            <label>Technician</label>
+            <div className="form-group">
 
-            <select
-              name="technician"
-              defaultValue="1"
-            >
+              <label htmlFor="technician">
+                Technician
+              </label>
 
-              {technicians.map((tech) => (
+              <select
+                id="technician"
+                value={technicianId}
+                onChange={(event) =>
+                  setTechnicianId(
+                    event.target.value
+                  )
+                }
+              >
 
-                <option
-                  key={tech.id}
-                  value={tech.id}
-                >
-                  {tech.name} - {tech.specialization}
-                </option>
+                {technicians.map((tech) => (
 
-              ))}
+                  <option
+                    key={tech.id}
+                    value={tech.id}
+                  >
+                    {tech.name} -{" "}
+                    {tech.specialization}
+                  </option>
 
-            </select>
+                ))}
 
-          </div>
+              </select>
 
+            </div>
+
+          )}
+
+
+          {/* LOGIN */}
 
           <button type="submit">
             Login
@@ -124,7 +190,8 @@ function Login({ onLogin, technicians }) {
 
 
         <p className="register-text">
-          Don't have an account? <span>Register</span>
+          Don't have an account?{" "}
+          <span>Register</span>
         </p>
 
       </div>
