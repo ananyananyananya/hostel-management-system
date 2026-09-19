@@ -1,17 +1,80 @@
+import { useState } from "react";
+
 function TechnicianDashboard({
   complaints,
   technicians,
   technicianId,
   onLogout,
-  onUpdateComplaint
+  onResolveComplaint
 }) {
+
+  const [activeFilter, setActiveFilter] = useState("ACTIVE");
+
+  const [resolutionText, setResolutionText] = useState({});
+
   const technician = technicians.find(
     (tech) => tech.id === technicianId
   );
+
+  // Only complaints assigned to this technician
   const assignedComplaints = complaints.filter(
     (complaint) =>
       complaint.assignedTechnician === technicianId
   );
+
+  // Active = technician still has work to do
+  const activeComplaints = assignedComplaints.filter(
+    (complaint) =>
+      complaint.status === "PENDING"
+  );
+
+  // Completed = technician has finished the repair
+  const completedComplaints = assignedComplaints.filter(
+    (complaint) =>
+      complaint.status === "RESOLVED" ||
+      complaint.status === "COMPLETED"
+  );
+
+  const displayedComplaints =
+    activeFilter === "ACTIVE"
+      ? activeComplaints
+      : completedComplaints;
+
+
+  const handleResolutionChange = (
+    complaintId,
+    value
+  ) => {
+
+    setResolutionText({
+      ...resolutionText,
+      [complaintId]: value
+    });
+
+  };
+
+
+  const handleResolve = (complaintId) => {
+
+    const resolution =
+      resolutionText[complaintId]?.trim();
+
+    if (!resolution) {
+
+      alert(
+        "Please enter the resolution details before marking the complaint as resolved."
+      );
+
+      return;
+    }
+
+    onResolveComplaint(
+      complaintId,
+      resolution
+    );
+
+  };
+
 
   return (
     <div className="dashboard">
@@ -63,24 +126,72 @@ function TechnicianDashboard({
           </p>
 
           <p>
-            Assigned complaints:{" "}
-            {assignedComplaints.length}
+            Active assignments:{" "}
+            {activeComplaints.length}
+          </p>
+
+          <p>
+            Completed repairs:{" "}
+            {completedComplaints.length}
           </p>
 
         </div>
 
 
-        {/* ASSIGNED COMPLAINTS */}
+        {/* FILTERS */}
 
-        <h3>My Assigned Complaints</h3>
+        <div className="complaint-filters">
+
+          <button
+            className={
+              activeFilter === "ACTIVE"
+                ? "filter-button active"
+                : "filter-button"
+            }
+            onClick={() =>
+              setActiveFilter("ACTIVE")
+            }
+          >
+            Active
+          </button>
+
+          <button
+            className={
+              activeFilter === "COMPLETED"
+                ? "filter-button active"
+                : "filter-button"
+            }
+            onClick={() =>
+              setActiveFilter("COMPLETED")
+            }
+          >
+            Completed
+          </button>
+
+        </div>
 
 
-        {assignedComplaints.length === 0 ? (
+        {/* SECTION TITLE */}
+
+        <h3>
+          {activeFilter === "ACTIVE"
+            ? "Active Assignments"
+            : "Completed Repairs"
+          }
+        </h3>
+
+
+        {/* COMPLAINTS */}
+
+        {displayedComplaints.length === 0 ? (
 
           <div className="empty-state">
 
             <p>
-              You currently have no assigned complaints.
+              {activeFilter === "ACTIVE"
+                ? "You have no active assignments."
+                : "You have no completed repairs."
+              }
             </p>
 
           </div>
@@ -89,157 +200,156 @@ function TechnicianDashboard({
 
           <div className="complaints-list">
 
-            {assignedComplaints.map((complaint) => (
+            {displayedComplaints.map(
+              (complaint) => (
 
-              <div
-                className="complaint-card"
-                key={complaint.id}
-              >
+                <div
+                  className="complaint-card"
+                  key={complaint.id}
+                >
 
-                <div className="complaint-header">
+                  {/* HEADER */}
 
-                  <h3>
-                    {complaint.title}
-                  </h3>
+                  <div className="complaint-header">
 
-                  <span className="status-badge">
-                    {complaint.status === "IN_PROGRESS"
-                      ? "IN PROGRESS"
-                      : complaint.status
-                    }
-                  </span>
+                    <h3>
+                      {complaint.title}
+                    </h3>
+
+                    <span className="status-badge">
+
+                      {complaint.status === "PENDING"
+                        ? "PENDING"
+                        : complaint.status
+                      }
+
+                    </span>
+
+                  </div>
+
+
+                  {/* DETAILS */}
+
+                  <p>
+                    <strong>Category:</strong>{" "}
+                    {complaint.category}
+                  </p>
+
+
+                  <p>
+                    <strong>Location:</strong>{" "}
+                    {complaint.hostelBlock}{" - "}
+                    {complaint.roomNumber}
+                  </p>
+
+
+                  <p>
+                    <strong>Description:</strong>{" "}
+                    {complaint.description}
+                  </p>
+
+
+                  <p>
+                    <strong>Priority:</strong>{" "}
+                    {complaint.priority}
+                  </p>
+
+
+                  <p>
+                    <strong>Submitted:</strong>{" "}
+                    {complaint.createdAt}
+                  </p>
+
+
+                  {/* RESOLVE ACTIVE COMPLAINT */}
+
+                  {complaint.status === "PENDING" && (
+
+                    <div className="resolution-section">
+
+                      <h4>
+                        Resolution Details
+                      </h4>
+
+                      <textarea
+                        value={
+                          resolutionText[
+                            complaint.id
+                          ] || ""
+                        }
+                        onChange={(event) =>
+                          handleResolutionChange(
+                            complaint.id,
+                            event.target.value
+                          )
+                        }
+                        placeholder="Describe the repair work performed..."
+                        rows="4"
+                      />
+
+                      <button
+                        className="primary-button"
+                        onClick={() =>
+                          handleResolve(
+                            complaint.id
+                          )
+                        }
+                      >
+                        Mark as Resolved
+                      </button>
+
+                    </div>
+
+                  )}
+
+
+                  {/* RESOLVED COMPLAINT */}
+
+                  {complaint.status === "RESOLVED" && (
+
+                    <div className="resolution-display">
+
+                      <p>
+                        <strong>
+                          Resolution:
+                        </strong>{" "}
+                        {complaint.resolutionDetails}
+                      </p>
+
+                      <p>
+                        Waiting for student verification.
+                      </p>
+
+                    </div>
+
+                  )}
+
+
+                  {/* COMPLETED COMPLAINT */}
+
+                  {complaint.status === "COMPLETED" && (
+
+                    <div className="resolution-display">
+
+                      <p>
+                        <strong>
+                          Resolution:
+                        </strong>{" "}
+                        {complaint.resolutionDetails}
+                      </p>
+
+                      <p>
+                        Student has verified the repair.
+                      </p>
+
+                    </div>
+
+                  )}
 
                 </div>
 
-
-                <p>
-                  <strong>Category:</strong>{" "}
-                  {complaint.category}
-                </p>
-
-
-                <p>
-                  <strong>Location:</strong>{" "}
-                  {complaint.hostelBlock}{" - "}
-                  {complaint.roomNumber}
-                </p>
-
-
-                <p>
-                  <strong>Description:</strong>{" "}
-                  {complaint.description}
-                </p>
-
-
-                <p>
-                  <strong>Priority:</strong>{" "}
-                  {complaint.priority}
-                </p>
-
-
-                <p>
-                  <strong>Submitted:</strong>{" "}
-                  {complaint.createdAt}
-                </p>
-
-
-                {/* START WORK */}
-
-                {complaint.status === "OPEN" && (
-
-                  <button
-                    className="primary-button"
-                    onClick={() =>
-                      onUpdateComplaint(
-                        complaint.id,
-                        {
-                          status: "IN_PROGRESS"
-                        }
-                      )
-                    }
-                  >
-                    Start Work
-                  </button>
-
-                )}
-
-
-                {/* IN PROGRESS */}
-
-                {complaint.status === "IN_PROGRESS" && (
-
-                  <div className="resolution-section">
-
-                    <h4>
-                      Resolution Details
-                    </h4>
-
-                    <textarea
-                      id={`resolution-${complaint.id}`}
-                      placeholder="Describe the work performed..."
-                      rows="4"
-                    />
-
-                    <button
-                      className="primary-button"
-                      onClick={() => {
-
-                        const textarea =
-                          document.getElementById(
-                            `resolution-${complaint.id}`
-                          );
-
-                        const resolutionDetails =
-                          textarea.value.trim();
-
-                        if (!resolutionDetails) {
-                          alert(
-                            "Please enter resolution details before marking the complaint as resolved."
-                          );
-
-                          return;
-                        }
-
-                        onUpdateComplaint(
-                          complaint.id,
-                          {
-                            status: "RESOLVED",
-                            resolutionDetails:
-                              resolutionDetails
-                          }
-                        );
-
-                      }}
-                    >
-                      Mark as Resolved
-                    </button>
-
-                  </div>
-
-                )}
-
-
-                {/* RESOLUTION DETAILS */}
-
-                {complaint.status === "RESOLVED" &&
-                  complaint.resolutionDetails && (
-
-                  <div className="resolution-display">
-
-                    <p>
-                      <strong>
-                        Resolution:
-                      </strong>{" "}
-                      {complaint.resolutionDetails}
-                    </p>
-
-                  </div>
-
-                )}
-
-              </div>
-
-            ))}
+              )
+            )}
 
           </div>
 

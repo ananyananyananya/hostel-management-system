@@ -117,6 +117,73 @@ function App() {
     );
   };
 
+  const handleAssignTechnician = (
+  complaintId,
+  technicianId
+) => {
+
+  setComplaints(
+    complaints.map((complaint) => {
+      if (complaint.id !== complaintId) {
+        return complaint;
+      }
+
+      return {
+        ...complaint,
+        assignedTechnician: technicianId,
+        status:
+          technicianId === null
+            ? "OPEN"
+            : "PENDING"
+      };
+
+    })
+  );
+};
+
+const handleResolveComplaint = (
+  complaintId,
+  resolutionDetails
+) => {
+
+  setComplaints(
+    complaints.map((complaint) => {
+
+      if (complaint.id !== complaintId) {
+        return complaint;
+      }
+
+      return {
+        ...complaint,
+        status: "RESOLVED",
+        resolutionDetails: resolutionDetails
+      };
+
+    })
+  );
+};
+
+const handleCompleteComplaint = (complaintId) => {
+
+  setComplaints(
+    complaints.map((complaint) => {
+
+      if (complaint.id !== complaintId) {
+        return complaint;
+      }
+
+      if (complaint.status !== "RESOLVED") {
+        return complaint;
+      }
+
+      return {
+        ...complaint,
+        status: "COMPLETED"
+      };
+
+    })
+  );
+};
 
   /* NOT LOGGED IN */
 
@@ -159,9 +226,8 @@ function App() {
       <WardenDashboard
         complaints={complaints}
         onLogout={handleLogout}
-        onUpdateComplaint={
-          handleUpdateComplaint
-        }
+        onUpdateComplaint={handleUpdateComplaint}
+        onAssignTechnician={handleAssignTechnician}
         technicians={technicians}
       />
     );
@@ -170,20 +236,20 @@ function App() {
 
   /* TECHNICIAN */
 
-  if (role === "technician") {
+if (role === "technician") {
 
-    return (
-      <TechnicianDashboard
-        complaints={complaints}
-        technicians={technicians}
-        technicianId={technicianId}
-        onLogout={handleLogout}
-        onUpdateComplaint={
-          handleUpdateComplaint
-        }
-      />
-    );
-  }
+  return (
+    <TechnicianDashboard
+      complaints={complaints}
+      technicians={technicians}
+      technicianId={technicianId}
+      onLogout={handleLogout}
+      onResolveComplaint={
+        handleResolveComplaint
+      }
+    />
+  );
+}
 
 
   /* STUDENT DASHBOARD */
@@ -191,10 +257,9 @@ function App() {
   return (
     <StudentDashboard
       onLogout={handleLogout}
-      onRaiseComplaint={
-        handleRaiseComplaint
-      }
+      onRaiseComplaint={handleRaiseComplaint}
       complaints={complaints}
+      onCompleteComplaint={handleCompleteComplaint}
     />
   );
 }

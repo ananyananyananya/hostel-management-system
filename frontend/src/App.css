@@ -1,19 +1,17 @@
 /* ---------------- ROOT VARIABLES ---------------- */
 :root {
   /* Your Custom Palette */
-  --primary: #38618C;       /* Blue-grey */
-  --primary-hover: #2a496b; /* Darker shade of primary for hovers */
-  --accent-purple: #A690A4; /* Mauve */
-  --accent-green: #D0E37F;  /* Lime/Yellow-Green */
+  --primary: #114b5f;
+  --primary-hover: #0F4557;
+  --accent-purple: #896a67;
+  --accent-green: #97cc04;
   
-  /* Structural Colors */
-  --bg-color: #f8fafc;
+  --bg-color: #f1f0ea;
   --surface: #ffffff;
-  --text-main: #0f172a;
-  --text-muted: #64748b;
+  --text-main: #0F1400;
+  --text-muted: #33535B;
   --border-light: #e2e8f0;
   
-  /* Shadows */
   --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
   --shadow-md: 0 10px 25px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
   --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
@@ -173,7 +171,6 @@ body {
   font-size: 24px;
   font-weight: 800;
   letter-spacing: -0.5px;
-  /* Gradient text using your primary and purple hex */
   background: linear-gradient(135deg, var(--primary), var(--accent-purple));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

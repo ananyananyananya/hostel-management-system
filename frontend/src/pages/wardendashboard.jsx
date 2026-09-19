@@ -1,13 +1,10 @@
-import { useState } from "react";
-
 function WardenDashboard({
   complaints,
   onLogout,
   onUpdateComplaint,
+  onAssignTechnician,
   technicians
 }) {
-
-  const [activeFilter, setActiveFilter] = useState("ACTIVE");
 
   const totalComplaints = complaints.length;
 
@@ -15,41 +12,17 @@ function WardenDashboard({
     (complaint) => complaint.status === "OPEN"
   ).length;
 
-  const inProgressComplaints = complaints.filter(
-    (complaint) => complaint.status === "IN_PROGRESS"
+  const pendingComplaints = complaints.filter(
+    (complaint) => complaint.status === "PENDING"
   ).length;
 
   const resolvedComplaints = complaints.filter(
     (complaint) => complaint.status === "RESOLVED"
   ).length;
 
-  /*
-    ACTIVE = everything that is not resolved
-    OPEN = only OPEN complaints
-    PENDING = only IN_PROGRESS complaints
-    RESOLVED = only RESOLVED complaints
-  */
-
-  const filteredComplaints = complaints.filter((complaint) => {
-
-    if (activeFilter === "ACTIVE") {
-      return complaint.status !== "RESOLVED";
-    }
-
-    if (activeFilter === "OPEN") {
-      return complaint.status === "OPEN";
-    }
-
-    if (activeFilter === "PENDING") {
-      return complaint.status === "IN_PROGRESS";
-    }
-
-    if (activeFilter === "RESOLVED") {
-      return complaint.status === "RESOLVED";
-    }
-
-    return true;
-  });
+  const completedComplaints = complaints.filter(
+    (complaint) => complaint.status === "COMPLETED"
+  ).length;
 
   return (
     <div className="dashboard">
@@ -100,7 +73,7 @@ function WardenDashboard({
           </div>
 
           <div className="stat-card">
-            <h3>{inProgressComplaints}</h3>
+            <h3>{pendingComplaints}</h3>
             <p>Pending</p>
           </div>
 
@@ -117,73 +90,47 @@ function WardenDashboard({
         <div className="complaint-filters">
 
           <button
-            className={
-              activeFilter === "ACTIVE"
-                ? "filter-button active"
-                : "filter-button"
-            }
-            onClick={() => setActiveFilter("ACTIVE")}
+            className="filter-button active"
           >
             Active
           </button>
 
           <button
-            className={
-              activeFilter === "OPEN"
-                ? "filter-button active"
-                : "filter-button"
-            }
-            onClick={() => setActiveFilter("OPEN")}
+            className="filter-button"
           >
             Open
           </button>
 
           <button
-            className={
-              activeFilter === "PENDING"
-                ? "filter-button active"
-                : "filter-button"
-            }
-            onClick={() => setActiveFilter("PENDING")}
+            className="filter-button"
           >
             Pending
           </button>
 
           <button
-            className={
-              activeFilter === "RESOLVED"
-                ? "filter-button active"
-                : "filter-button"
-            }
-            onClick={() => setActiveFilter("RESOLVED")}
+            className="filter-button"
           >
             Resolved
+          </button>
+
+          <button
+            className="filter-button"
+          >
+            Completed
           </button>
 
         </div>
 
 
-        {/* CURRENT SECTION TITLE */}
-
-        <h3>
-          {activeFilter === "ACTIVE" && "Active Complaints"}
-          {activeFilter === "OPEN" && "Open Complaints"}
-          {activeFilter === "PENDING" && "Pending Complaints"}
-          {activeFilter === "RESOLVED" && "Resolved Complaints"}
-        </h3>
+        <h3>All Complaints</h3>
 
 
-        {/* COMPLAINTS */}
-
-        {filteredComplaints.length === 0 ? (
+        {complaints.length === 0 ? (
 
           <div className="empty-state">
 
             <p>
-              {activeFilter === "RESOLVED"
-                ? "No resolved complaints."
-                : "No complaints in this category."
-              }
+              No complaints have been submitted yet.
             </p>
 
           </div>
@@ -192,26 +139,29 @@ function WardenDashboard({
 
           <div className="complaints-list">
 
-            {filteredComplaints.map((complaint) => (
+            {complaints.map((complaint) => (
 
               <div
                 className="complaint-card"
                 key={complaint.id}
               >
 
+                {/* HEADER */}
+
                 <div className="complaint-header">
 
                   <h3>{complaint.title}</h3>
 
                   <span className="status-badge">
-                    {complaint.status === "IN_PROGRESS"
-                      ? "PENDING"
-                      : complaint.status
-                    }
+
+                    {complaint.status}
+
                   </span>
 
                 </div>
 
+
+                {/* BASIC DETAILS */}
 
                 <p>
                   <strong>Category:</strong>{" "}
@@ -236,42 +186,6 @@ function WardenDashboard({
 
                 <div className="complaint-controls">
 
-
-                  {/* STATUS */}
-
-                  <div className="control-group">
-
-                    <label>Status</label>
-
-                    <select
-                      value={complaint.status}
-                      onChange={(event) =>
-                        onUpdateComplaint(
-                          complaint.id,
-                          {
-                            status: event.target.value
-                          }
-                        )
-                      }
-                    >
-
-                      <option value="OPEN">
-                        Open
-                      </option>
-
-                      <option value="IN_PROGRESS">
-                        Pending
-                      </option>
-
-                      <option value="RESOLVED">
-                        Resolved
-                      </option>
-
-                    </select>
-
-                  </div>
-
-
                   {/* PRIORITY */}
 
                   <div className="control-group">
@@ -284,7 +198,8 @@ function WardenDashboard({
                         onUpdateComplaint(
                           complaint.id,
                           {
-                            priority: event.target.value
+                            priority:
+                              event.target.value
                           }
                         )
                       }
@@ -325,17 +240,21 @@ function WardenDashboard({
                       value={
                         complaint.assignedTechnician || ""
                       }
-                      onChange={(event) =>
-                        onUpdateComplaint(
+                      onChange={(event) => {
+
+                        const technicianId =
+                          event.target.value === ""
+                            ? null
+                            : Number(
+                                event.target.value
+                              );
+
+                        onAssignTechnician(
                           complaint.id,
-                          {
-                            assignedTechnician:
-                              event.target.value === ""
-                                ? null
-                                : Number(event.target.value)
-                          }
-                        )
-                      }
+                          technicianId
+                        );
+
+                      }}
                     >
 
                       <option value="">
@@ -366,6 +285,7 @@ function WardenDashboard({
                 {complaint.assignedTechnician && (
 
                   <p>
+
                     <strong>
                       Assigned Technician:
                     </strong>{" "}
@@ -383,11 +303,33 @@ function WardenDashboard({
                 )}
 
 
+                {/* RESOLUTION */}
+
+                {complaint.resolutionDetails && (
+
+                  <p>
+
+                    <strong>
+                      Resolution:
+                    </strong>{" "}
+
+                    {complaint.resolutionDetails}
+
+                  </p>
+
+                )}
+
+
                 {/* SUBMITTED */}
 
                 <p>
-                  <strong>Submitted:</strong>{" "}
+
+                  <strong>
+                    Submitted:
+                  </strong>{" "}
+
                   {complaint.createdAt}
+
                 </p>
 
               </div>
