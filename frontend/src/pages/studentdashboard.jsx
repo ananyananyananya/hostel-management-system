@@ -7,481 +7,151 @@ function StudentDashboard({
   onCompleteComplaint,
   onFollowUpComplaint
 }) {
+  const [activeFilter, setActiveFilter] = useState("ACTIVE");
+  const [followUpText, setFollowUpText] = useState({});
+  const [followUpOpen, setFollowUpOpen] = useState({});
 
-  const [activeFilter, setActiveFilter] =
-    useState("ACTIVE");
-
-  const [followUpText, setFollowUpText] =
-    useState({});
-
-  const [followUpOpen, setFollowUpOpen] =
-    useState({});
-
-
-  /*
-    ACTIVE:
-    OPEN + PENDING
-
-    RESOLVED:
-    Waiting for student verification
-
-    COMPLETED:
-    Student has verified the repair
-  */
-
-  const filteredComplaints =
-    complaints.filter((complaint) => {
-
-      if (activeFilter === "ACTIVE") {
-        return (
-          complaint.status === "OPEN" ||
-          complaint.status === "PENDING"
-        );
-      }
-
-      if (activeFilter === "RESOLVED") {
-        return complaint.status === "RESOLVED";
-      }
-
-      if (activeFilter === "COMPLETED") {
-        return complaint.status === "COMPLETED";
-      }
-
-      return true;
-    });
-
-
-  /* Open/close follow-up form */
+  const filteredComplaints = complaints.filter((complaint) => {
+    if (activeFilter === "ACTIVE") return complaint.status === "OPEN" || complaint.status === "PENDING";
+    if (activeFilter === "RESOLVED") return complaint.status === "RESOLVED";
+    if (activeFilter === "COMPLETED") return complaint.status === "COMPLETED";
+    return true;
+  });
 
   const toggleFollowUp = (complaintId) => {
-
-    setFollowUpOpen({
-      ...followUpOpen,
-      [complaintId]:
-        !followUpOpen[complaintId]
-    });
-
+    setFollowUpOpen({ ...followUpOpen, [complaintId]: !followUpOpen[complaintId] });
   };
 
-
-  /* Store follow-up text */
-
-  const handleFollowUpTextChange = (
-    complaintId,
-    value
-  ) => {
-
-    setFollowUpText({
-      ...followUpText,
-      [complaintId]: value
-    });
-
+  const handleFollowUpTextChange = (complaintId, value) => {
+    setFollowUpText({ ...followUpText, [complaintId]: value });
   };
 
-
-  /* Submit follow-up */
-
-  const handleSubmitFollowUp = (
-    complaintId
-  ) => {
-
-    const reason =
-      followUpText[complaintId]?.trim();
-
+  const handleSubmitFollowUp = (complaintId) => {
+    const reason = followUpText[complaintId]?.trim();
     if (!reason) {
-
-      alert(
-        "Please describe the issue before submitting a follow-up request."
-      );
-
+      alert("Please describe the issue before submitting a follow-up request.");
       return;
     }
-
-    onFollowUpComplaint(
-      complaintId,
-      reason
-    );
-
-    // Close the form
-    setFollowUpOpen({
-      ...followUpOpen,
-      [complaintId]: false
-    });
-
-    // Clear text
-    setFollowUpText({
-      ...followUpText,
-      [complaintId]: ""
-    });
-
+    onFollowUpComplaint(complaintId, reason);
+    setFollowUpOpen({ ...followUpOpen, [complaintId]: false });
+    setFollowUpText({ ...followUpText, [complaintId]: "" });
   };
 
+  const getStatusClass = (status) => `status-badge status-${status.toLowerCase()}`;
 
   return (
-    <div className="dashboard">
-
-      {/* NAVBAR */}
-
-      <header className="navbar">
-
-        <h1>Smart Hostel</h1>
-
-        <div className="navbar-right">
-
-          <span>Student</span>
-
-          <button
-            className="logout-button"
-            onClick={onLogout}
-          >
-            Logout
-          </button>
-
+    <div className="layout">
+      <aside className="sidebar">
+        <div className="sidebar-brand">
+          <h2>Smart Hostel</h2>
+          <span className="role-tag">Student</span>
         </div>
-
-      </header>
-
-
-      <main className="dashboard-content">
-
-        <h2>Student Dashboard</h2>
-
-        <p className="dashboard-subtitle">
-          Track your hostel maintenance complaints.
-        </p>
-
-
-        {/* RAISE COMPLAINT */}
-
-        <div className="welcome-card">
-
-          <h3>Need something fixed?</h3>
-
-          <p>
-            Report a hostel maintenance issue
-            and track its progress until it is
-            completed.
-          </p>
-
-          <button
-            className="primary-button"
-            onClick={onRaiseComplaint}
-          >
-            + Raise a Complaint
-          </button>
-
-        </div>
-
-
-        {/* FILTERS */}
-
-        <div className="complaint-filters">
-
-          <button
-            className={
-              activeFilter === "ACTIVE"
-                ? "filter-button active"
-                : "filter-button"
-            }
-            onClick={() =>
-              setActiveFilter("ACTIVE")
-            }
-          >
+        
+        <nav className="sidebar-nav">
+          <button className={`nav-item ${activeFilter === "ACTIVE" ? "active" : ""}`} onClick={() => setActiveFilter("ACTIVE")}>
             Active
           </button>
-
-
-          <button
-            className={
-              activeFilter === "RESOLVED"
-                ? "filter-button active"
-                : "filter-button"
-            }
-            onClick={() =>
-              setActiveFilter("RESOLVED")
-            }
-          >
-            Resolved
+          <button className={`nav-item ${activeFilter === "RESOLVED" ? "active" : ""}`} onClick={() => setActiveFilter("RESOLVED")}>
+            Needs Verification
           </button>
-
-
-          <button
-            className={
-              activeFilter === "COMPLETED"
-                ? "filter-button active"
-                : "filter-button"
-            }
-            onClick={() =>
-              setActiveFilter("COMPLETED")
-            }
-          >
+          <button className={`nav-item ${activeFilter === "COMPLETED" ? "active" : ""}`} onClick={() => setActiveFilter("COMPLETED")}>
             Completed
           </button>
+        </nav>
 
+        <div className="sidebar-bottom">
+          <button className="primary-button full-width" onClick={onRaiseComplaint}>
+            + New Complaint
+          </button>
+          <button className="nav-item logout-button" onClick={onLogout}>
+            Log out
+          </button>
         </div>
+      </aside>
 
+      <main className="main-content">
+        <div className="page-container">
+          <header className="page-header">
+            <h1>
+              {activeFilter === "ACTIVE" && "Active Complaints"}
+              {activeFilter === "RESOLVED" && "Review Resolutions"}
+              {activeFilter === "COMPLETED" && "Completed History"}
+            </h1>
+            <p>Track and manage your hostel maintenance requests.</p>
+          </header>
 
-        {/* SECTION TITLE */}
-
-        <h3>
-
-          {activeFilter === "ACTIVE" &&
-            "Active Complaints"
-          }
-
-          {activeFilter === "RESOLVED" &&
-            "Resolved Complaints"
-          }
-
-          {activeFilter === "COMPLETED" &&
-            "Completed Complaints"
-          }
-
-        </h3>
-
-
-        {/* COMPLAINTS */}
-
-        {filteredComplaints.length === 0 ? (
-
-          <div className="empty-state">
-
-            <p>
-
-              {activeFilter === "ACTIVE" &&
-                "You have no active complaints."
-              }
-
-              {activeFilter === "RESOLVED" &&
-                "No complaints are waiting for verification."
-              }
-
-              {activeFilter === "COMPLETED" &&
-                "You have no completed complaints."
-              }
-
-            </p>
-
-          </div>
-
-        ) : (
-
-          <div className="complaints-list">
-
-            {filteredComplaints.map(
-              (complaint) => (
-
-                <div
-                  className="complaint-card"
-                  key={complaint.id}
-                >
-
-                  {/* HEADER */}
-
+          {filteredComplaints.length === 0 ? (
+            <div className="empty-state">
+              No {activeFilter.toLowerCase()} complaints to display.
+            </div>
+          ) : (
+            <div className="complaints-list">
+              {filteredComplaints.map((complaint) => (
+                <div className="complaint-card" key={complaint.id}>
                   <div className="complaint-header">
-
-                    <h3>
-                      {complaint.title}
-                    </h3>
-
-                    <span className="status-badge">
-
-                      {complaint.status}
-
-                    </span>
-
+                    <h3>{complaint.title}</h3>
+                    <span className={getStatusClass(complaint.status)}>{complaint.status}</span>
+                  </div>
+                  
+                  <div className="complaint-meta">
+                    <span><strong>Category:</strong> {complaint.category}</span>
+                    <span><strong>Room:</strong> {complaint.hostelBlock} - {complaint.roomNumber}</span>
+                    <span><strong>Date:</strong> {complaint.createdAt}</span>
+                  </div>
+                  
+                  <div className="complaint-description">
+                    {complaint.description}
                   </div>
 
-
-                  {/* DETAILS */}
-
-                  <p>
-                    <strong>Category:</strong>{" "}
-                    {complaint.category}
-                  </p>
-
-
-                  <p>
-                    <strong>Location:</strong>{" "}
-                    {complaint.hostelBlock}{" - "}
-                    {complaint.roomNumber}
-                  </p>
-
-
-                  <p>
-                    <strong>Description:</strong>{" "}
-                    {complaint.description}
-                  </p>
-
-
-                  <p>
-                    <strong>Submitted:</strong>{" "}
-                    {complaint.createdAt}
-                  </p>
-
-
-                  {/* RESOLVED */}
-
                   {complaint.status === "RESOLVED" && (
-
-                    <div className="resolution-display">
-
-                      <p>
-                        <strong>
-                          Resolution:
-                        </strong>{" "}
-
-                        {complaint.resolutionDetails ||
-                          "No resolution details provided."
-                        }
-
-                      </p>
-
-
+                    <div className="resolution-box">
+                      <h4>Resolution Provided</h4>
+                      <p>{complaint.resolutionDetails || "No details provided."}</p>
+                      
                       <div className="resolution-actions">
-
-                        <button
-                          className="primary-button"
-                          onClick={() =>
-                            onCompleteComplaint(
-                              complaint.id
-                            )
-                          }
-                        >
-                          Mark as Completed
+                        <button className="primary-button" onClick={() => onCompleteComplaint(complaint.id)}>
+                          Accept & Complete
                         </button>
-
-
-                        <button
-                          className="secondary-button"
-                          onClick={() =>
-                            toggleFollowUp(
-                              complaint.id
-                            )
-                          }
-                        >
-                          Request Follow-up
+                        <button className="secondary-button" onClick={() => toggleFollowUp(complaint.id)}>
+                          Follow Up
                         </button>
-
                       </div>
 
-
-                      {/* FOLLOW-UP FORM */}
-
-                      {followUpOpen[
-                        complaint.id
-                      ] && (
-
-                        <div className="follow-up-section">
-
-                          <h4>
-                            Request Follow-up
-                          </h4>
-
-                          <p>
-                            Tell us what is still
-                            wrong with the issue.
-                          </p>
-
+                      {followUpOpen[complaint.id] && (
+                        <div className="form-group" style={{ marginTop: '16px' }}>
                           <textarea
-                            value={
-                              followUpText[
-                                complaint.id
-                              ] || ""
-                            }
-                            onChange={(event) =>
-                              handleFollowUpTextChange(
-                                complaint.id,
-                                event.target.value
-                              )
-                            }
-                            placeholder="e.g. The fan is still making the same noise..."
-                            rows="4"
+                            value={followUpText[complaint.id] || ""}
+                            onChange={(e) => handleFollowUpTextChange(complaint.id, e.target.value)}
+                            placeholder="Explain what is still wrong..."
+                            rows="3"
                           />
-
-                          <button
-                            className="primary-button"
-                            onClick={() =>
-                              handleSubmitFollowUp(
-                                complaint.id
-                              )
-                            }
-                          >
+                          <button className="primary-button" onClick={() => handleSubmitFollowUp(complaint.id)}>
                             Submit Follow-up
                           </button>
-
                         </div>
-
                       )}
-
                     </div>
-
                   )}
-
-
-                  {/* COMPLETED */}
 
                   {complaint.status === "COMPLETED" && (
-
-                    <div className="resolution-display">
-
-                      <p>
-                        <strong>
-                          Resolution:
-                        </strong>{" "}
-
-                        {complaint.resolutionDetails ||
-                          "No resolution details provided."
-                        }
-
-                      </p>
-
-                      <p>
-                        You have verified that the
-                        issue has been resolved.
-                      </p>
-
+                    <div className="resolution-box">
+                      <h4>Resolution Verified</h4>
+                      <p>{complaint.resolutionDetails || "Issue was resolved."}</p>
                     </div>
-
                   )}
 
-
-                  {/* FOLLOW-UP NOTICE */}
-
-                  {complaint.status === "PENDING" &&
-                    complaint.followUpRequested && (
-
-                    <div className="resolution-display">
-
-                      <p>
-                        <strong>
-                          Follow-up requested:
-                        </strong>{" "}
-
-                        {complaint.followUpReason}
-
-                      </p>
-
-                      <p>
-                        The issue has been sent back
-                        for further attention.
-                      </p>
-
+                  {complaint.status === "PENDING" && complaint.followUpRequested && (
+                    <div className="resolution-box">
+                      <h4>Follow-up Requested</h4>
+                      <p>{complaint.followUpReason}</p>
                     </div>
-
                   )}
-
                 </div>
-
-              )
-            )}
-
-          </div>
-
-        )}
-
+              ))}
+            </div>
+          )}
+        </div>
       </main>
-
     </div>
   );
 }

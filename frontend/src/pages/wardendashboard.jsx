@@ -7,547 +7,166 @@ function WardenDashboard({
   onAssignTechnician,
   technicians
 }) {
+  const [activeFilter, setActiveFilter] = useState("ACTIVE");
 
-  const [activeFilter, setActiveFilter] =
-    useState("ACTIVE");
+  const openComplaints = complaints.filter(c => c.status === "OPEN").length;
+  const pendingComplaints = complaints.filter(c => c.status === "PENDING").length;
+  const resolvedComplaints = complaints.filter(c => c.status === "RESOLVED").length;
+  const completedComplaints = complaints.filter(c => c.status === "COMPLETED").length;
 
-
-  /* -----------------------------
-     STATISTICS
-  ----------------------------- */
-
-  const totalComplaints =
-    complaints.length;
-
-  const openComplaints =
-    complaints.filter(
-      (complaint) =>
-        complaint.status === "OPEN"
-    ).length;
-
-  const pendingComplaints =
-    complaints.filter(
-      (complaint) =>
-        complaint.status === "PENDING"
-    ).length;
-
-  const resolvedComplaints =
-    complaints.filter(
-      (complaint) =>
-        complaint.status === "RESOLVED"
-    ).length;
-
-  const completedComplaints =
-    complaints.filter(
-      (complaint) =>
-        complaint.status === "COMPLETED"
-    ).length;
-
-
-  /* -----------------------------
-     FILTER COMPLAINTS
-  ----------------------------- */
-
-  const filteredComplaints =
-    complaints.filter((complaint) => {
-
-      if (activeFilter === "ACTIVE") {
-        return (
-          complaint.status === "OPEN" ||
-          complaint.status === "PENDING"
-        );
-      }
-
-      if (activeFilter === "OPEN") {
-        return complaint.status === "OPEN";
-      }
-
-      if (activeFilter === "PENDING") {
-        return complaint.status === "PENDING";
-      }
-
-      if (activeFilter === "RESOLVED") {
-        return complaint.status === "RESOLVED";
-      }
-
-      if (activeFilter === "COMPLETED") {
-        return complaint.status === "COMPLETED";
-      }
-
-      return true;
-    });
-
-
-  /* -----------------------------
-     SECTION TITLE
-  ----------------------------- */
+  const filteredComplaints = complaints.filter((complaint) => {
+    if (activeFilter === "ACTIVE") return complaint.status === "OPEN" || complaint.status === "PENDING";
+    if (activeFilter === "OPEN") return complaint.status === "OPEN";
+    if (activeFilter === "PENDING") return complaint.status === "PENDING";
+    if (activeFilter === "RESOLVED") return complaint.status === "RESOLVED";
+    if (activeFilter === "COMPLETED") return complaint.status === "COMPLETED";
+    return true;
+  });
 
   const getSectionTitle = () => {
-
-    if (activeFilter === "ACTIVE") {
-      return "Active Complaints";
-    }
-
-    if (activeFilter === "OPEN") {
-      return "Open Complaints";
-    }
-
-    if (activeFilter === "PENDING") {
-      return "Pending Complaints";
-    }
-
-    if (activeFilter === "RESOLVED") {
-      return "Resolved Complaints";
-    }
-
-    if (activeFilter === "COMPLETED") {
-      return "Completed Complaints";
-    }
-
-    return "Complaints";
+    const titles = {
+      ACTIVE: "Action Required",
+      OPEN: "Unassigned Complaints",
+      PENDING: "Work in Progress",
+      RESOLVED: "Awaiting Verification",
+      COMPLETED: "Completed History"
+    };
+    return titles[activeFilter];
   };
 
-
-  /* -----------------------------
-     FILTER BUTTON
-  ----------------------------- */
-
-  const FilterButton = ({
-    value,
-    label,
-    count
-  }) => (
-
-    <button
-      className={
-        activeFilter === value
-          ? "filter-button active"
-          : "filter-button"
-      }
-      onClick={() =>
-        setActiveFilter(value)
-      }
-    >
-      {label}
-
-      <span className="filter-count">
-        {count}
-      </span>
-
-    </button>
-
-  );
-
+  const getStatusClass = (status) => `status-badge status-${status.toLowerCase()}`;
 
   return (
-    <div className="dashboard">
-
-      {/* NAVBAR */}
-
-      <header className="navbar">
-
-        <h1>Smart Hostel</h1>
-
-        <div className="navbar-right">
-
-          <span>Warden</span>
-
-          <button
-            className="logout-button"
-            onClick={onLogout}
-          >
-            Logout
+    <div className="layout">
+      <aside className="sidebar">
+        <div className="sidebar-brand">
+          <h2>Smart Hostel</h2>
+          <span className="role-tag">Warden</span>
+        </div>
+        
+        <nav className="sidebar-nav">
+          <button className={`nav-item ${activeFilter === "ACTIVE" ? "active" : ""}`} onClick={() => setActiveFilter("ACTIVE")}>
+            Active
+            <span className="filter-count">{openComplaints + pendingComplaints}</span>
           </button>
+          <button className={`nav-item ${activeFilter === "OPEN" ? "active" : ""}`} onClick={() => setActiveFilter("OPEN")}>
+            Unassigned
+            <span className="filter-count">{openComplaints}</span>
+          </button>
+          <button className={`nav-item ${activeFilter === "PENDING" ? "active" : ""}`} onClick={() => setActiveFilter("PENDING")}>
+            In Progress
+            <span className="filter-count">{pendingComplaints}</span>
+          </button>
+          <button className={`nav-item ${activeFilter === "RESOLVED" ? "active" : ""}`} onClick={() => setActiveFilter("RESOLVED")}>
+            To Verify
+            <span className="filter-count">{resolvedComplaints}</span>
+          </button>
+          <button className={`nav-item ${activeFilter === "COMPLETED" ? "active" : ""}`} onClick={() => setActiveFilter("COMPLETED")}>
+            Completed
+            <span className="filter-count">{completedComplaints}</span>
+          </button>
+        </nav>
 
+        <div className="sidebar-bottom">
+          <button className="nav-item logout-button" onClick={onLogout}>
+            Log out
+          </button>
         </div>
+      </aside>
 
-      </header>
+      <main className="main-content">
+        <div className="page-container">
+          <header className="page-header">
+            <h1>Warden Dashboard</h1>
+            <p>Monitor operations and delegate maintenance jobs.</p>
+          </header>
 
-
-      <main className="dashboard-content">
-
-        <h2>Warden Dashboard</h2>
-
-        <p className="dashboard-subtitle">
-          Monitor and manage hostel maintenance complaints.
-        </p>
-
-
-        {/* STATISTICS */}
-
-        <div className="stats-container">
-
-          <div className="stat-card">
-
-            <h3>
-              {totalComplaints}
-            </h3>
-
-            <p>
-              Total Complaints
-            </p>
-
+          <div className="stats-grid">
+            <div className="stat-card">
+              <p>Total Complaints</p>
+              <h3>{complaints.length}</h3>
+            </div>
+            <div className="stat-card">
+              <p>Unassigned</p>
+              <h3>{openComplaints}</h3>
+            </div>
+            <div className="stat-card">
+              <p>In Progress</p>
+              <h3>{pendingComplaints}</h3>
+            </div>
           </div>
 
+          <h2 style={{ fontSize: '20px', marginBottom: '24px' }}>{getSectionTitle()}</h2>
 
-          <div className="stat-card">
-
-            <h3>
-              {openComplaints}
-            </h3>
-
-            <p>
-              Open
-            </p>
-
-          </div>
-
-
-          <div className="stat-card">
-
-            <h3>
-              {pendingComplaints}
-            </h3>
-
-            <p>
-              Pending
-            </p>
-
-          </div>
-
-
-          <div className="stat-card">
-
-            <h3>
-              {resolvedComplaints}
-            </h3>
-
-            <p>
-              Resolved
-            </p>
-
-          </div>
-
-        </div>
-
-
-        {/* FILTERS */}
-
-        <div className="complaint-filters">
-
-          <FilterButton
-            value="ACTIVE"
-            label="Active"
-            count={
-              openComplaints +
-              pendingComplaints
-            }
-          />
-
-          <FilterButton
-            value="OPEN"
-            label="Open"
-            count={openComplaints}
-          />
-
-          <FilterButton
-            value="PENDING"
-            label="Pending"
-            count={pendingComplaints}
-          />
-
-          <FilterButton
-            value="RESOLVED"
-            label="Resolved"
-            count={resolvedComplaints}
-          />
-
-          <FilterButton
-            value="COMPLETED"
-            label="Completed"
-            count={completedComplaints}
-          />
-
-        </div>
-
-
-        {/* SECTION TITLE */}
-
-        <h3>
-          {getSectionTitle()}
-        </h3>
-
-
-        {/* EMPTY STATE */}
-
-        {filteredComplaints.length === 0 ? (
-
-          <div className="empty-state">
-
-            <p>
-              {activeFilter === "ACTIVE" &&
-                "There are no active complaints."
-              }
-
-              {activeFilter === "OPEN" &&
-                "There are no open complaints."
-              }
-
-              {activeFilter === "PENDING" &&
-                "There are no pending complaints."
-              }
-
-              {activeFilter === "RESOLVED" &&
-                "There are no resolved complaints."
-              }
-
-              {activeFilter === "COMPLETED" &&
-                "There are no completed complaints."
-              }
-
-            </p>
-
-          </div>
-
-        ) : (
-
-          <div className="complaints-list">
-
-            {filteredComplaints.map(
-              (complaint) => (
-
-                <div
-                  className="complaint-card"
-                  key={complaint.id}
-                >
-
-                  {/* HEADER */}
-
+          {filteredComplaints.length === 0 ? (
+            <div className="empty-state">
+              No records found in this category.
+            </div>
+          ) : (
+            <div className="complaints-list">
+              {filteredComplaints.map((complaint) => (
+                <div className="complaint-card" key={complaint.id}>
                   <div className="complaint-header">
-
-                    <h3>
-                      {complaint.title}
-                    </h3>
-
-                    <span className="status-badge">
-
-                      {complaint.status ===
-                        "IN_PROGRESS"
-                        ? "PENDING"
-                        : complaint.status
-                      }
-
-                    </span>
-
+                    <h3>{complaint.title}</h3>
+                    <span className={getStatusClass(complaint.status)}>{complaint.status}</span>
                   </div>
-
-
-                  {/* DETAILS */}
-
-                  <p>
-                    <strong>
-                      Category:
-                    </strong>{" "}
-
-                    {complaint.category}
-
-                  </p>
-
-
-                  <p>
-
-                    <strong>
-                      Location:
-                    </strong>{" "}
-
-                    {complaint.hostelBlock}
-                    {" - "}
-                    {complaint.roomNumber}
-
-                  </p>
-
-
-                  <p>
-
-                    <strong>
-                      Description:
-                    </strong>{" "}
-
+                  
+                  <div className="complaint-meta">
+                    <span><strong>Category:</strong> {complaint.category}</span>
+                    <span><strong>Location:</strong> {complaint.hostelBlock} - {complaint.roomNumber}</span>
+                    <span><strong>Submitted:</strong> {complaint.createdAt}</span>
+                  </div>
+                  
+                  <div className="complaint-description">
                     {complaint.description}
-
-                  </p>
-
-
-                  {/* WARDEN CONTROLS */}
+                  </div>
 
                   <div className="complaint-controls">
-
-                    {/* PRIORITY */}
-
-                    <div className="control-group">
-
-                      <label>
-                        Priority
-                      </label>
-
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label>Priority</label>
                       <select
-                        value={
-                          complaint.priority
-                        }
-                        onChange={(event) =>
-                          onUpdateComplaint(
-                            complaint.id,
-                            {
-                              priority:
-                                event.target.value
-                            }
-                          )
-                        }
+                        value={complaint.priority}
+                        onChange={(e) => onUpdateComplaint(complaint.id, { priority: e.target.value })}
                       >
-
-                        <option value="PENDING">
-                          Pending
-                        </option>
-
-                        <option value="LOW">
-                          Low
-                        </option>
-
-                        <option value="MEDIUM">
-                          Medium
-                        </option>
-
-                        <option value="HIGH">
-                          High
-                        </option>
-
-                        <option value="CRITICAL">
-                          Critical
-                        </option>
-
+                        <option value="PENDING">Select</option>
+                        <option value="LOW">Low</option>
+                        <option value="MEDIUM">Medium</option>
+                        <option value="HIGH">High</option>
+                        <option value="CRITICAL">Critical</option>
                       </select>
-
                     </div>
 
-
-                    {/* TECHNICIAN */}
-
-                    <div className="control-group">
-
-                      <label>
-                        Technician
-                      </label>
-
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label>Assign Technician</label>
                       <select
-                        value={
-                          complaint.assignedTechnician ||
-                          ""
-                        }
-                        onChange={(event) => {
-
-                          const technicianId =
-                            event.target.value === ""
-                              ? null
-                              : Number(
-                                  event.target.value
-                                );
-
-                          onAssignTechnician(
-                            complaint.id,
-                            technicianId
-                          );
-
+                        value={complaint.assignedTechnician || ""}
+                        onChange={(e) => {
+                          const val = e.target.value === "" ? null : Number(e.target.value);
+                          onAssignTechnician(complaint.id, val);
                         }}
                       >
-
-                        <option value="">
-                          Unassigned
-                        </option>
-
-                        {technicians.map(
-                          (tech) => (
-
-                            <option
-                              key={tech.id}
-                              value={tech.id}
-                            >
-                              {tech.name} -{" "}
-                              {tech.specialization}
-                            </option>
-
-                          )
-                        )}
-
+                        <option value="">Unassigned</option>
+                        {technicians.map((tech) => (
+                          <option key={tech.id} value={tech.id}>
+                            {tech.name} - {tech.specialization}
+                          </option>
+                        ))}
                       </select>
-
                     </div>
-
                   </div>
 
-
-                  {/* ASSIGNED TECHNICIAN */}
-
-                  {complaint.assignedTechnician && (
-
-                    <p>
-
-                      <strong>
-                        Assigned Technician:
-                      </strong>{" "}
-
-                      {
-                        technicians.find(
-                          (tech) =>
-                            tech.id ===
-                            complaint.assignedTechnician
-                        )?.name
-                      }
-
-                    </p>
-
-                  )}
-
-
-                  {/* RESOLUTION */}
-
                   {complaint.resolutionDetails && (
-
-                    <p>
-
-                      <strong>
-                        Resolution:
-                      </strong>{" "}
-
-                      {complaint.resolutionDetails}
-
-                    </p>
-
+                    <div className="resolution-box">
+                      <h4>Resolution Record</h4>
+                      <p>{complaint.resolutionDetails}</p>
+                    </div>
                   )}
-
-
-                  {/* SUBMITTED */}
-
-                  <p>
-
-                    <strong>
-                      Submitted:
-                    </strong>{" "}
-
-                    {complaint.createdAt}
-
-                  </p>
-
                 </div>
-
-              )
-            )}
-
-          </div>
-
-        )}
-
+              ))}
+            </div>
+          )}
+        </div>
       </main>
-
     </div>
   );
 }

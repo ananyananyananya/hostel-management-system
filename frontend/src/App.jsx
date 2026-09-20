@@ -1,266 +1,124 @@
 import { useState } from "react";
-
 import Login from "./pages/login";
 import StudentDashboard from "./pages/studentdashboard";
 import RaiseComplaint from "./pages/raisecomplaint";
 import WardenDashboard from "./pages/wardendashboard";
 import TechnicianDashboard from "./pages/techniciandashboard";
-
 import "./App.css";
 
-
 const technicians = [
-  {
-    id: 1,
-    name: "Raj Kumar",
-    specialization: "Electrical"
-  },
-  {
-    id: 2,
-    name: "Arjun Singh",
-    specialization: "Plumbing"
-  },
-  {
-    id: 3,
-    name: "Priya Sharma",
-    specialization: "General Maintenance"
-  }
+  { id: 1, name: "Raj Kumar", specialization: "Electrical" },
+  { id: 2, name: "Arjun Singh", specialization: "Plumbing" },
+  { id: 3, name: "Priya Sharma", specialization: "General Maintenance" }
 ];
 
-
 function App() {
-
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
   const [role, setRole] = useState("student");
-
   const [technicianId, setTechnicianId] = useState(null);
-
-  const [currentPage, setCurrentPage] =
-    useState("dashboard");
-
+  const [currentPage, setCurrentPage] = useState("dashboard");
   const [complaints, setComplaints] = useState([]);
 
-
   /* LOGIN */
-
-  const handleLogin = (
-    selectedRole,
-    selectedTechnicianId
-  ) => {
-
+  const handleLogin = (selectedRole, selectedTechnicianId) => {
     setRole(selectedRole);
-
-    setTechnicianId(
-      selectedTechnicianId
-    );
-
+    setTechnicianId(selectedTechnicianId);
     setIsLoggedIn(true);
-
     setCurrentPage("dashboard");
   };
 
-
   /* LOGOUT */
-
   const handleLogout = () => {
-
     setIsLoggedIn(false);
-
     setCurrentPage("dashboard");
-
     setTechnicianId(null);
   };
 
-
   /* STUDENT */
-
-  const handleRaiseComplaint = () => {
-
-    setCurrentPage("raise-complaint");
-  };
-
-
-  const handleBackToDashboard = () => {
-
-    setCurrentPage("dashboard");
-  };
-
-
+  const handleRaiseComplaint = () => setCurrentPage("raise-complaint");
+  const handleBackToDashboard = () => setCurrentPage("dashboard");
+  
   const handleSubmitComplaint = (complaint) => {
-
-    setComplaints([
-      ...complaints,
-      complaint
-    ]);
-
+    setComplaints([...complaints, complaint]);
     setCurrentPage("dashboard");
   };
-
 
   /* UPDATE COMPLAINT */
-
-  const handleUpdateComplaint = (
-    complaintId,
-    updates
-  ) => {
-
+  const handleUpdateComplaint = (complaintId, updates) => {
     setComplaints(
       complaints.map((complaint) =>
-        complaint.id === complaintId
-          ? {
-              ...complaint,
-              ...updates
-            }
-          : complaint
+        complaint.id === complaintId ? { ...complaint, ...updates } : complaint
       )
     );
   };
 
-  const handleAssignTechnician = (
-  complaintId,
-  technicianId
-) => {
+  const handleAssignTechnician = (complaintId, technicianId) => {
+    setComplaints(
+      complaints.map((complaint) => {
+        if (complaint.id !== complaintId) return complaint;
+        return {
+          ...complaint,
+          assignedTechnician: technicianId,
+          status: technicianId === null ? "OPEN" : "PENDING"
+        };
+      })
+    );
+  };
 
-  setComplaints(
-    complaints.map((complaint) => {
-      if (complaint.id !== complaintId) {
-        return complaint;
-      }
+  const handleResolveComplaint = (complaintId, resolutionDetails) => {
+    setComplaints(
+      complaints.map((complaint) => {
+        if (complaint.id !== complaintId) return complaint;
+        return {
+          ...complaint,
+          status: "RESOLVED",
+          resolutionDetails: resolutionDetails
+        };
+      })
+    );
+  };
 
-      return {
-        ...complaint,
-        assignedTechnician: technicianId,
-        status:
-          technicianId === null
-            ? "OPEN"
-            : "PENDING"
-      };
+  const handleCompleteComplaint = (complaintId) => {
+    setComplaints(
+      complaints.map((complaint) => {
+        if (complaint.id !== complaintId) return complaint;
+        if (complaint.status !== "RESOLVED") return complaint;
+        return { ...complaint, status: "COMPLETED" };
+      })
+    );
+  };
 
-    })
-  );
-};
-
-const handleResolveComplaint = (
-  complaintId,
-  resolutionDetails
-) => {
-
-  setComplaints(
-    complaints.map((complaint) => {
-
-      if (complaint.id !== complaintId) {
-        return complaint;
-      }
-
-      return {
-        ...complaint,
-        status: "RESOLVED",
-        resolutionDetails: resolutionDetails
-      };
-
-    })
-  );
-};
-
-const handleCompleteComplaint = (complaintId) => {
-
-  setComplaints(
-    complaints.map((complaint) => {
-
-      if (complaint.id !== complaintId) {
-        return complaint;
-      }
-
-      if (complaint.status !== "RESOLVED") {
-        return complaint;
-      }
-
-      return {
-        ...complaint,
-        status: "COMPLETED"
-      };
-
-    })
-  );
-};
-
-const handleFollowUpComplaint = (
-  complaintId,
-  followUpReason
-) => {
-
-  setComplaints(
-    complaints.map((complaint) => {
-
-      if (complaint.id !== complaintId) {
-        return complaint;
-      }
-
-      // Follow-up can only be requested after resolution
-      if (complaint.status !== "RESOLVED") {
-        return complaint;
-      }
-
-      return {
-        ...complaint,
-
-        // Send it back into the active workflow
-        status: "PENDING",
-
-        // Keep the technician assigned
-        assignedTechnician:
-          complaint.assignedTechnician,
-
-        // Record the follow-up
-        followUpRequested: true,
-        followUpReason: followUpReason,
-
-        followUpCount:
-          (complaint.followUpCount || 0) + 1
-      };
-
-    })
-  );
-};
-
-  /* NOT LOGGED IN */
+  const handleFollowUpComplaint = (complaintId, followUpReason) => {
+    setComplaints(
+      complaints.map((complaint) => {
+        if (complaint.id !== complaintId) return complaint;
+        if (complaint.status !== "RESOLVED") return complaint;
+        return {
+          ...complaint,
+          status: "PENDING",
+          assignedTechnician: complaint.assignedTechnician,
+          followUpRequested: true,
+          followUpReason: followUpReason,
+          followUpCount: (complaint.followUpCount || 0) + 1
+        };
+      })
+    );
+  };
 
   if (!isLoggedIn) {
-
-    return (
-      <Login
-        onLogin={handleLogin}
-        technicians={technicians}
-      />
-    );
+    return <Login onLogin={handleLogin} technicians={technicians} />;
   }
 
-
-  /* STUDENT - RAISE COMPLAINT */
-
-  if (
-    role === "student" &&
-    currentPage === "raise-complaint"
-  ) {
-
+  if (role === "student" && currentPage === "raise-complaint") {
     return (
       <RaiseComplaint
-        onBack={
-          handleBackToDashboard
-        }
-        onSubmit={
-          handleSubmitComplaint
-        }
+        onBack={handleBackToDashboard}
+        onSubmit={handleSubmitComplaint}
       />
     );
   }
 
-
-  /* WARDEN */
-
   if (role === "warden") {
-
     return (
       <WardenDashboard
         complaints={complaints}
@@ -272,26 +130,17 @@ const handleFollowUpComplaint = (
     );
   }
 
-
-  /* TECHNICIAN */
-
-if (role === "technician") {
-
-  return (
-    <TechnicianDashboard
-      complaints={complaints}
-      technicians={technicians}
-      technicianId={technicianId}
-      onLogout={handleLogout}
-      onResolveComplaint={
-        handleResolveComplaint
-      }
-    />
-  );
-}
-
-
-  /* STUDENT DASHBOARD */
+  if (role === "technician") {
+    return (
+      <TechnicianDashboard
+        complaints={complaints}
+        technicians={technicians}
+        technicianId={technicianId}
+        onLogout={handleLogout}
+        onResolveComplaint={handleResolveComplaint}
+      />
+    );
+  }
 
   return (
     <StudentDashboard
@@ -303,6 +152,5 @@ if (role === "technician") {
     />
   );
 }
-
 
 export default App;
