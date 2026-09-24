@@ -194,9 +194,10 @@ function Login({ onLogin, onGoToSignup }) {
               )}
 
               <button
-                type="submit"
-                disabled={isLoading}
-              >
+  type="submit"
+  className="primary-button full-width"
+  disabled={isLoading}
+>
                 {isLoading
                   ? "Signing in..."
                   : "Sign In"}

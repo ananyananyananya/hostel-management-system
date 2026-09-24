@@ -217,12 +217,6 @@ function Signup({ onBackToLogin }) {
               Create Student Account
             </h2>
 
-            <p>
-              New accounts are registered as
-              Student accounts.
-            </p>
-
-
             <form
               onSubmit={handleSignup}
             >
@@ -310,11 +304,13 @@ function Signup({ onBackToLogin }) {
                   LH-D
                 </option>
                 <option value="LH E">
+                  LH-E
                 </option>
                 <option value="LH F">
                   LH-F
                 </option>
                 <option value="LH G">
+                  LH-G
                 </option>
                 <option value="LH H">
                   LH-H
@@ -332,6 +328,7 @@ function Signup({ onBackToLogin }) {
                   MH-C
                 </option>
                 <option value="MH D">
+                  MH-D
                 </option>
                 <option value="MH E">
                   MH-E
@@ -411,9 +408,10 @@ function Signup({ onBackToLogin }) {
 
 
               <button
-                type="submit"
-                disabled={isLoading}
-              >
+  type="submit"
+  className="primary-button full-width"
+  disabled={isLoading}
+>
                 {isLoading
                   ? "Creating account..."
                   : "Sign Up"}
@@ -429,11 +427,12 @@ function Signup({ onBackToLogin }) {
               {" "}
 
               <button
-                type="button"
-                onClick={
-                  onBackToLogin
-                }
-              >
+  type="button"
+  className="primary-button full-width"
+  onClick={
+    onBackToLogin
+  }
+>
                 Back to Login
               </button>
 

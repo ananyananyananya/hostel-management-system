@@ -1,4 +1,3 @@
-/* ---------------- ROOT VARIABLES (Notion Inspired + Custom Palette) ---------------- */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
@@ -7,18 +6,16 @@
   --teal: #548687;
   --slate: #2B303A;
   --mauve: #8A7090;
-
+  
   --bg-main: #FFFFFF;
   --bg-sidebar: #F7F7F5;
-  --bg-hover: #EFEFED;
-  
-  --text-main: #2B303A;
-  --text-muted: #787774; /* Notion's muted gray */
-  
-  --border-light: #E5E7EB;
-  --border-dark: #D1D5DB;
-
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --bg-hover: rgba(43, 48, 58, 0.04);
+  --text-main: var(--slate);
+  --text-muted: rgba(43, 48, 58, 0.6); 
+  --border-light: rgba(43, 48, 58, 0.08);
+  --border-dark: rgba(43, 48, 58, 0.2);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.04);
 }
 
 html, body {
@@ -28,13 +25,9 @@ html, body {
   background-color: var(--bg-main);
   color: var(--text-main);
   -webkit-font-smoothing: antialiased;
-}
-
-* {
   box-sizing: border-box;
 }
 
-/* ---------------- LAYOUT (Sidebar + Main Content) ---------------- */
 .layout {
   display: flex;
   height: 100vh;
@@ -43,25 +36,26 @@ html, body {
 }
 
 .sidebar {
-  width: 260px;
+  width: 240px;
   background-color: var(--bg-sidebar);
   border-right: 1px solid var(--border-light);
   display: flex;
   flex-direction: column;
-  padding: 20px 16px;
+  padding: 24px 12px;
   flex-shrink: 0;
 }
 
 .sidebar-brand {
-  margin-bottom: 24px;
-  padding: 0 8px;
+  margin-bottom: 28px;
+  padding: 0 12px;
 }
 
 .sidebar-brand h2 {
-  margin: 0 0 4px 0;
-  font-size: 16px;
+  margin: 0 0 6px 0;
+  font-size: 15px;
   font-weight: 600;
   color: var(--slate);
+  letter-spacing: -0.01em;
 }
 
 .role-tag {
@@ -71,14 +65,14 @@ html, body {
   font-weight: 600;
   color: var(--teal);
   background: rgba(84, 134, 135, 0.1);
-  padding: 3px 6px;
+  padding: 2px 6px;
   border-radius: 4px;
 }
 
 .sidebar-nav {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
   flex-grow: 1;
 }
 
@@ -92,62 +86,61 @@ html, body {
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  color: var(--text-main);
+  color: var(--text-muted);
   font-size: 14px;
   font-weight: 500;
   font-family: inherit;
   text-align: left;
-  transition: background 0.1s ease;
+  transition: all 0.1s ease;
 }
 
 .nav-item:hover {
   background-color: var(--bg-hover);
+  color: var(--text-main);
 }
 
 .nav-item.active {
-  background-color: rgba(84, 134, 135, 0.1); /* Teal tint */
+  background-color: rgba(84, 134, 135, 0.08);
   color: var(--teal);
   font-weight: 600;
 }
 
 .filter-count {
   font-size: 12px;
-  background: var(--border-light);
-  padding: 2px 6px;
-  border-radius: 12px;
+  font-weight: 500;
   color: var(--text-muted);
 }
 
 .sidebar-bottom {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
   margin-top: auto;
-  padding-top: 20px;
-  border-top: 1px solid var(--border-light);
+  padding-top: 16px;
 }
 
 .main-content {
   flex-grow: 1;
   overflow-y: auto;
-  padding: 48px 64px;
+  padding: 64px 80px;
   background-color: var(--bg-main);
 }
 
 .page-container {
-  max-width: 900px;
+  max-width: 840px;
   margin: 0 auto;
 }
 
 .page-header {
-  margin-bottom: 40px;
+  margin-bottom: 32px;
 }
 
 .page-header h1 {
   font-size: 32px;
   font-weight: 700;
   margin: 0 0 8px 0;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
+  color: var(--slate);
 }
 
 .page-header p {
@@ -156,79 +149,46 @@ html, body {
   font-size: 15px;
 }
 
-/* ---------------- LOGIN ---------------- */
-.login-page {
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: var(--bg-sidebar);
-}
-
-.login-box {
-  width: 100%;
-  max-width: 400px;
-  background: var(--bg-main);
-  padding: 40px;
-  border-radius: 12px;
-  border: 1px solid var(--border-light);
-  box-shadow: var(--shadow-sm);
-}
-
-.login-box h1 {
-  margin: 0 0 8px 0;
-  font-size: 24px;
-  font-weight: 700;
-}
-
-.login-box p {
-  color: var(--text-muted);
-  margin: 0 0 24px 0;
-  font-size: 14px;
-}
-
-/* ---------------- FORMS & BUTTONS ---------------- */
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--text-muted);
 }
 
 .form-group input, 
 .form-group select, 
-.form-group textarea,
+.form-group textarea, 
 .login-box select {
   width: 100%;
-  padding: 10px 12px;
-  border: 1px solid var(--border-dark);
+  padding: 10px 14px;
+  border: 1px solid var(--border-light);
   border-radius: 6px;
   font-size: 14px;
   font-family: inherit;
-  background: var(--bg-main);
+  background: transparent;
   color: var(--text-main);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .form-group input:focus, 
 .form-group select:focus, 
-.form-group textarea:focus,
-.login-box select:focus {
+.form-group textarea:focus {
   outline: none;
   border-color: var(--teal);
-  box-shadow: 0 0 0 2px rgba(84, 134, 135, 0.2);
+  box-shadow: 0 0 0 3px rgba(84, 134, 135, 0.15);
 }
 
 .primary-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 16px;
+  padding: 8px 16px;
   background: var(--teal);
   color: #fff;
   border: none;
@@ -240,7 +200,7 @@ html, body {
 }
 
 .primary-button:hover {
-  background: #467273;
+  background: #446C6D;
 }
 
 .primary-button.full-width {
@@ -251,10 +211,10 @@ html, body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 16px;
+  padding: 8px 16px;
   background: transparent;
   color: var(--slate);
-  border: 1px solid var(--border-dark);
+  border: 1px solid var(--border-light);
   border-radius: 6px;
   font-size: 14px;
   font-weight: 500;
@@ -264,16 +224,18 @@ html, body {
 
 .secondary-button:hover {
   background: var(--bg-hover);
+  border-color: var(--border-dark);
 }
 
 .logout-button {
   color: var(--rust);
 }
+
 .logout-button:hover {
-  background: rgba(163, 59, 32, 0.05);
+  background: rgba(163, 59, 32, 0.08);
+  color: var(--rust);
 }
 
-/* ---------------- COMPLAINTS LIST (Notion Card Style) ---------------- */
 .complaints-list {
   display: flex;
   flex-direction: column;
@@ -285,83 +247,92 @@ html, body {
   border: 1px solid var(--border-light);
   border-radius: 8px;
   padding: 24px;
-  transition: box-shadow 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .complaint-card:hover {
-  box-shadow: var(--shadow-sm);
+  border-color: var(--border-dark);
+  box-shadow: var(--shadow-md);
 }
 
 .complaint-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .complaint-header h3 {
   margin: 0;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--slate);
 }
 
 .complaint-meta {
   display: flex;
+  flex-wrap: wrap;
   gap: 16px;
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-muted);
   margin-bottom: 16px;
 }
 
+.complaint-meta strong {
+  font-weight: 500;
+  color: var(--slate);
+}
+
 .complaint-description {
-  font-size: 15px;
-  line-height: 1.5;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-main);
   margin-bottom: 20px;
 }
 
-/* ---------------- STATUS BADGES ---------------- */
 .status-badge {
   display: inline-flex;
   align-items: center;
-  padding: 4px 10px;
-  border-radius: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
   text-transform: capitalize;
 }
 
 .status-open {
-  background: rgba(163, 59, 32, 0.1);
-  color: var(--rust);
+  background: var(--bg-sidebar);
+  color: var(--slate);
+  border: 1px solid var(--border-light);
 }
 
 .status-pending {
-  background: rgba(242, 192, 120, 0.2);
-  color: #B4781A; /* Darker sand for accessible contrast */
+  background: rgba(242, 192, 120, 0.15);
+  color: #9C7132;
 }
 
 .status-resolved {
-  background: rgba(138, 112, 144, 0.1);
+  background: rgba(138, 112, 144, 0.15);
   color: var(--mauve);
 }
 
 .status-completed {
-  background: rgba(84, 134, 135, 0.1);
+  background: rgba(84, 134, 135, 0.15);
   color: var(--teal);
 }
 
-/* ---------------- RESOLUTION & FOLLOW UP ---------------- */
 .resolution-box {
   background: var(--bg-sidebar);
   border-radius: 6px;
   padding: 16px;
-  margin-top: 16px;
+  margin-top: 20px;
+  border: 1px solid var(--border-light);
 }
 
 .resolution-box h4 {
   margin: 0 0 8px 0;
-  font-size: 14px;
+  font-size: 13px;
+  font-weight: 600;
   color: var(--slate);
 }
 
@@ -369,6 +340,7 @@ html, body {
   margin: 0;
   font-size: 14px;
   color: var(--text-muted);
+  line-height: 1.5;
 }
 
 .resolution-actions {
@@ -377,17 +349,11 @@ html, body {
   margin-top: 16px;
 }
 
-.follow-up-section textarea,
-.resolution-section textarea {
-  margin-bottom: 12px;
-}
-
-/* ---------------- WARDEN STATS ---------------- */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 16px;
-  margin-bottom: 32px;
+  margin-bottom: 40px;
 }
 
 .stat-card {
@@ -406,81 +372,123 @@ html, body {
 
 .stat-card h3 {
   margin: 0;
-  font-size: 32px;
-  font-weight: 700;
+  font-size: 28px;
+  font-weight: 600;
   color: var(--slate);
 }
 
 .empty-state {
   text-align: center;
-  padding: 60px 20px;
+  padding: 48px 20px;
   color: var(--text-muted);
-  font-size: 15px;
-  border: 1px dashed var(--border-dark);
+  font-size: 14px;
+  border: 1px dashed var(--border-light);
   border-radius: 8px;
+  background: var(--bg-sidebar);
 }
 
-.complaint-controls {
+.login-container {
+  height: 100vh;
   display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--bg-sidebar);
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  background: var(--bg-main);
+  padding: 48px 40px;
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-md);
+  box-sizing: border-box;
+}
+
+.login-card h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--slate);
+  margin: 0 0 8px 0;
+  text-align: center;
+}
+
+.login-card h2 {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin: 0 0 24px 0;
+  text-align: center;
+}
+
+.login-card form {
+  display: flex;
+  flex-direction: column;
   gap: 16px;
-  padding-top: 16px;
-  border-top: 1px solid var(--border-light);
-  margin-top: 16px;
+  margin-bottom: 24px;
 }
 
-/* ---------------- RESPONSIVE ---------------- */
-@media (max-width: 768px) {
-  .layout {
-    flex-direction: column;
-  }
-  .sidebar {
-    width: 100%;
-    border-right: none;
-    border-bottom: 1px solid var(--border-light);
-    padding: 16px;
-  }
-  .sidebar-nav {
-    flex-direction: row;
-    overflow-x: auto;
-  }
-  .sidebar-bottom {
-    flex-direction: row;
-    margin-top: 16px;
-    padding-top: 16px;
-  }
-  .main-content {
-    padding: 24px;
-  }
+.login-card input, 
+.login-card select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  background: transparent;
+  color: var(--text-main);
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* Custom Dropdown Arrow Positioning */
-.form-group select, 
-.login-box select,
-.complaint-controls select {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23787774' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 12px center; 
-  background-size: 16px;
-  padding-right: 36px; 
+.login-card input:focus, 
+.login-card select:focus {
+  outline: none;
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(84, 134, 135, 0.15);
 }
 
-.complaint-controls .form-group select {
-  min-width: 120px;
+.signup-link {
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.signup-link button {
+  background: none;
+  border: none;
+  color: var(--teal);
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  font-size: 14px;
+}
+
+.signup-link button:hover {
+  text-decoration: underline;
 }
 
 .complaint-image {
-  margin-top: 15px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-light);
+}
+
+.complaint-image p {
+  margin: 0 0 12px 0;
+  font-size: 13px;
+  color: var(--slate);
 }
 
 .complaint-image img {
   display: block;
-  max-width: 320px;
-  max-height: 240px;
-  width: auto;
+  max-width: 100%;
   height: auto;
-  border-radius: 8px;
+  max-height: 280px;
+  border-radius: 6px;
+  border: 1px solid var(--border-light);
   object-fit: contain;
+  background: var(--bg-sidebar);
 }

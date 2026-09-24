@@ -18,6 +18,10 @@ function StudentDashboard({
     return true;
   });
 
+  const activeCount = complaints.filter(c => c.status === "OPEN" || c.status === "PENDING").length;
+  const resolvedCount = complaints.filter(c => c.status === "RESOLVED").length;
+  const completedCount = complaints.filter(c => c.status === "COMPLETED").length;
+
   const toggleFollowUp = (complaintId) => {
     setFollowUpOpen({ ...followUpOpen, [complaintId]: !followUpOpen[complaintId] });
   };
@@ -43,19 +47,23 @@ function StudentDashboard({
     <div className="layout">
       <aside className="sidebar">
         <div className="sidebar-brand">
-          <h2>Smart Hostel</h2>
-          <span className="role-tag">Student</span>
-        </div>
+  <h2>Smart Hostel</h2>
+  <span className="role-tag">Student</span>
+</div>
         
+        {/* Replace this entire block inside the sidebar */}
         <nav className="sidebar-nav">
           <button className={`nav-item ${activeFilter === "ACTIVE" ? "active" : ""}`} onClick={() => setActiveFilter("ACTIVE")}>
             Active
+            <span className="filter-count">{activeCount}</span>
           </button>
           <button className={`nav-item ${activeFilter === "RESOLVED" ? "active" : ""}`} onClick={() => setActiveFilter("RESOLVED")}>
             Needs Verification
+            <span className="filter-count">{resolvedCount}</span>
           </button>
           <button className={`nav-item ${activeFilter === "COMPLETED" ? "active" : ""}`} onClick={() => setActiveFilter("COMPLETED")}>
             Completed
+            <span className="filter-count">{completedCount}</span>
           </button>
         </nav>
 
@@ -96,7 +104,14 @@ function StudentDashboard({
                   <div className="complaint-meta">
                     <span><strong>Category:</strong> {complaint.category}</span>
                     <span><strong>Room:</strong> {complaint.hostelBlock} - {complaint.roomNumber}</span>
-                    <span><strong>Date:</strong> {complaint.createdAt}</span>
+                    <span><strong>Date:</strong> {new Date(complaint.createdAt).toLocaleString('en-US', { 
+  month: 'short', 
+  day: 'numeric', 
+  year: 'numeric', 
+  hour: 'numeric', 
+  minute: '2-digit', 
+  hour12: true 
+})}</span>
                   </div>
                   
                   <div className="complaint-description">

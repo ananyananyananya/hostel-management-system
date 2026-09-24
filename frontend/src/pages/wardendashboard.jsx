@@ -40,9 +40,9 @@ function WardenDashboard({
     <div className="layout">
       <aside className="sidebar">
         <div className="sidebar-brand">
-          <h2>Smart Hostel</h2>
-          <span className="role-tag">Warden</span>
-        </div>
+  <h2>Smart Hostel</h2>
+  <span className="role-tag">Warden</span>
+</div>
         
         <nav className="sidebar-nav">
           <button className={`nav-item ${activeFilter === "ACTIVE" ? "active" : ""}`} onClick={() => setActiveFilter("ACTIVE")}>
@@ -114,7 +114,14 @@ function WardenDashboard({
                   <div className="complaint-meta">
                     <span><strong>Category:</strong> {complaint.category}</span>
                     <span><strong>Location:</strong> {complaint.hostelBlock} - {complaint.roomNumber}</span>
-                    <span><strong>Submitted:</strong> {complaint.createdAt}</span>
+                    <span><strong>Submitted:</strong> {new Date(complaint.createdAt).toLocaleString('en-US', { 
+  month: 'short', 
+  day: 'numeric', 
+  year: 'numeric', 
+  hour: 'numeric', 
+  minute: '2-digit', 
+  hour12: true 
+})}</span>
                   </div>
                   
                   <div className="complaint-description">

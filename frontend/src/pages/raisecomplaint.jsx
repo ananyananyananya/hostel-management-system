@@ -406,32 +406,21 @@ function RaiseComplaint({ onBack, onSubmit }) {
           Provide details about the maintenance issue.
         </p>
 
-
-        {/* ================================= */}
+{/* ================================= */}
         {/* PROFILE INFORMATION */}
         {/* ================================= */}
-
         <div className="form-group">
-
-          <label>
-            Hostel Block
-          </label>
-
+          <label>Location</label>
           {profileLoading ? (
             <p>Loading...</p>
           ) : profileError ? (
-            <p className="error-message">
-              {profileError}
-            </p>
+            <p className="error-message">{profileError}</p>
           ) : (
-            <p className="form-readonly">
-              {profile?.hostelBlock ||
-                "Not available"}
-            </p>
+            <span className="status-badge status-open">
+              {profile?.hostelBlock || "N/A"} - Room {profile?.roomNumber || "N/A"}
+            </span>
           )}
-
         </div>
-
 
         <div className="form-group">
 
