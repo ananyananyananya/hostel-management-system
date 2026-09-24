@@ -94,6 +94,19 @@ function TechnicianDashboard({
                     {complaint.description}
                   </div>
 
+                  {complaint.imageUrl && (
+  <div className="complaint-image">
+    <p>
+      <strong>Attached Image</strong>
+    </p>
+
+    <img
+      src={complaint.imageUrl}
+      alt={`Attachment for ${complaint.title}`}
+    />
+  </div>
+)}
+
                   {complaint.status === "PENDING" && (
                     <div className="resolution-section">
                       <div className="form-group">

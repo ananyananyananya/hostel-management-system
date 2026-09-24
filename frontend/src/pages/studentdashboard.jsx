@@ -100,8 +100,21 @@ function StudentDashboard({
                   </div>
                   
                   <div className="complaint-description">
-                    {complaint.description}
-                  </div>
+  {complaint.description}
+</div>
+
+{complaint.imageUrl && (
+  <div className="complaint-image">
+    <p>
+      <strong>Attached Image</strong>
+    </p>
+
+    <img
+      src={complaint.imageUrl}
+      alt={`Attachment for ${complaint.title}`}
+    />
+  </div>
+)}
 
                   {complaint.status === "RESOLVED" && (
                     <div className="resolution-box">

@@ -121,6 +121,19 @@ function WardenDashboard({
                     {complaint.description}
                   </div>
 
+                  {complaint.imageUrl && (
+  <div className="complaint-image">
+    <p>
+      <strong>Attached Image</strong>
+    </p>
+
+    <img
+      src={complaint.imageUrl}
+      alt={`Attachment for ${complaint.title}`}
+    />
+  </div>
+)}
+
                   <div className="complaint-controls">
                     <div className="form-group" style={{ marginBottom: 0 }}>
                       <label>Priority</label>

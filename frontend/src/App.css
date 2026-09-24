@@ -470,3 +470,17 @@ html, body {
 .complaint-controls .form-group select {
   min-width: 120px;
 }
+
+.complaint-image {
+  margin-top: 15px;
+}
+
+.complaint-image img {
+  display: block;
+  max-width: 320px;
+  max-height: 240px;
+  width: auto;
+  height: auto;
+  border-radius: 8px;
+  object-fit: contain;
+}
