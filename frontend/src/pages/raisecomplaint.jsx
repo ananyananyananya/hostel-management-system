@@ -438,7 +438,7 @@ function RaiseComplaint({ onBack, onSubmit }) {
 
           <form className="complaint-form" onSubmit={handleSubmit}>
             
-]            <div className="form-group">
+            <div className="form-group">
               <label>Complaint Title</label>
               <input
                 type="text"
