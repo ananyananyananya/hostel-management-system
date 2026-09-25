@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { fetchAuthSession } from "aws-amplify/auth";
 
 const API_BASE_URL =
-  "https://2i69h3xqhi.execute-api.ap-south-1.amazonaws.com";
+  import.meta.env.VITE_API_BASE_URL;
 
 const COMPLAINTS_URL =
   `${API_BASE_URL}/complaints`;

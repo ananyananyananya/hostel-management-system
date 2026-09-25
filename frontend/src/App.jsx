@@ -10,8 +10,11 @@ import TechnicianDashboard from "./pages/techniciandashboard";
 
 import "./App.css";
 
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL;
+
 const API_URL =
-  "https://2i69h3xqhi.execute-api.ap-south-1.amazonaws.com/complaints";
+  `${API_BASE_URL}/complaints`;
 
   const getAuthToken = async () => {
   const { tokens } = await fetchAuthSession();
