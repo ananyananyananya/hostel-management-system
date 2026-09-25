@@ -382,220 +382,153 @@ function RaiseComplaint({ onBack, onSubmit }) {
   // ==========================================
 
   return (
-    <div className="dashboard">
-
-      <header className="navbar">
-
-        <h1>Smart Hostel</h1>
-
-        <button
-          className="logout-button"
-          onClick={onBack}
-        >
-          Back
-        </button>
-
-      </header>
-
-
-      <main className="dashboard-content">
-
-        <h2>Raise a Complaint</h2>
-
-        <p className="dashboard-subtitle">
-          Provide details about the maintenance issue.
-        </p>
-
-{/* ================================= */}
-        {/* PROFILE INFORMATION */}
-        {/* ================================= */}
-        <div className="form-group">
-          <label>Block</label>
-          {profileLoading ? (
-            <p>Loading...</p>
-          ) : profileError ? (
-            <p className="error-message">{profileError}</p>
-          ) : (
-            <span className="status-badge status-open">
-              {profile?.hostelBlock || "N/A"} - Room {profile?.roomNumber || "N/A"}
-            </span>
-          )}
+    <div className="layout">
+      <aside className="sidebar">
+        <div className="sidebar-brand">
+          <h2>Smart Hostel</h2>
+          <span className="role-tag">Student View</span>
         </div>
-
-        <div className="form-group">
-
-          <label>
-            Room Number
-          </label>
-
-          {profileLoading ? (
-            <p>Loading...</p>
-          ) : profileError ? (
-            <p className="error-message">
-              {profileError}
-            </p>
-          ) : (
-            <p className="form-readonly">
-              {profile?.roomNumber ||
-                "Not available"}
-            </p>
-          )}
-
-        </div>
-
-
-        {/* ================================= */}
-        {/* COMPLAINT FORM */}
-        {/* ================================= */}
-
-        <form
-          className="complaint-form"
-          onSubmit={handleSubmit}
-        >
-
-          {/* TITLE */}
-
-          <div className="form-group">
-
-            <label>
-              Complaint Title
-            </label>
-
-            <input
-              type="text"
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              placeholder="e.g. Bathroom tap leaking"
-              required
-            />
-
-          </div>
-
-
-          {/* CATEGORY */}
-
-          <div className="form-group">
-
-            <label>
-              Category
-            </label>
-
-            <select
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-              required
-            >
-
-              <option value="">
-                Select a category
-              </option>
-
-              <option value="Plumbing">
-                Plumbing
-              </option>
-
-              <option value="Electrical">
-                Electrical
-              </option>
-
-              <option value="Furniture">
-                Furniture
-              </option>
-
-              <option value="Internet">
-                Internet / Wi-Fi
-              </option>
-
-              <option value="Cleaning">
-                Cleaning
-              </option>
-
-              <option value="Other">
-                Other
-              </option>
-
-            </select>
-
-          </div>
-
-
-          {/* DESCRIPTION */}
-
-          <div className="form-group">
-
-            <label>
-              Description
-            </label>
-
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              placeholder="Describe the issue in detail..."
-              rows="5"
-              required
-            />
-
-          </div>
-
-
-          {/* IMAGE */}
-
-          <div className="form-group">
-
-            <label>
-              Attach Image
-            </label>
-
-            <input
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-              onChange={handleFileChange}
-            />
-
-            <small>
-              Optional. JPEG, PNG, or WebP.
-              Maximum size: 5 MB.
-            </small>
-
-            {selectedFile && (
-              <p>
-                Selected:{" "}
-                {selectedFile.name}
-              </p>
-            )}
-
-          </div>
-
-
-          {/* SUBMIT */}
-
-          <button
-            type="submit"
-            className="primary-button"
-            disabled={
-              isSubmitting ||
-              profileLoading ||
-              !!profileError ||
-              !profile?.hostelBlock ||
-              !profile?.roomNumber
-            }
-          >
-
-            {isSubmitting
-              ? selectedFile
-                ? "Uploading & Submitting..."
-                : "Submitting..."
-              : "Submit Complaint"}
-
+        <div className="sidebar-bottom">
+          <button className="secondary-button full-width" onClick={onBack}>
+            Back to Dashboard
           </button>
+        </div>
+      </aside>
 
-        </form>
+      <main className="main-content">
+        <div className="page-container">
+          <header className="page-header">
+            <h1>Raise a Complaint</h1>
+            <p>Provide details about the maintenance issue.</p>
+          </header>
 
+          {/* ================================= */}
+          {/* PROFILE INFORMATION */}
+          {/* ================================= */}
+          <div style={{ display: 'flex', gap: '16px', marginBottom: '24px' }}>
+            <div className="form-group" style={{ flex: 1, marginBottom: 0 }}>
+              <label>Hostel Block</label>
+              {profileLoading ? (
+                <p style={{ margin: 0, fontSize: '14px', color: 'var(--text-muted)' }}>Loading...</p>
+              ) : profileError ? (
+                <p className="error-message" style={{ margin: 0 }}>{profileError}</p>
+              ) : (
+                <input 
+                  type="text" 
+                  value={profile?.hostelBlock || "N/A"} 
+                  readOnly 
+                  style={{ backgroundColor: 'var(--bg-sidebar)', color: 'var(--text-muted)' }} 
+                />
+              )}
+            </div>
+            
+            <div className="form-group" style={{ flex: 1, marginBottom: 0 }}>
+              <label>Room Number</label>
+              {profileLoading ? (
+                <p style={{ margin: 0, fontSize: '14px', color: 'var(--text-muted)' }}>Loading...</p>
+              ) : profileError ? (
+                <p className="error-message" style={{ margin: 0 }}>{profileError}</p>
+              ) : (
+                <input 
+                  type="text" 
+                  value={profile?.roomNumber || "N/A"} 
+                  readOnly 
+                  style={{ backgroundColor: 'var(--bg-sidebar)', color: 'var(--text-muted)' }} 
+                />
+              )}
+            </div>
+          </div>
+
+          {/* ================================= */}
+          {/* COMPLAINT FORM */}
+          {/* ================================= */}
+          <form className="complaint-form" onSubmit={handleSubmit}>
+            
+            {/* TITLE */}
+            <div className="form-group">
+              <label>Complaint Title</label>
+              <input
+                type="text"
+                name="title"
+                value={formData.title}
+                onChange={handleChange}
+                placeholder="e.g. Bathroom tap leaking"
+                required
+              />
+            </div>
+
+            {/* CATEGORY */}
+            <div className="form-group">
+              <label>Category</label>
+              <select
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Select a category</option>
+                <option value="Plumbing">Plumbing</option>
+                <option value="Electrical">Electrical</option>
+                <option value="Furniture">Furniture</option>
+                <option value="Internet">Internet / Wi-Fi</option>
+                <option value="Cleaning">Cleaning</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            {/* DESCRIPTION */}
+            <div className="form-group">
+              <label>Description</label>
+              <textarea
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                placeholder="Describe the issue in detail..."
+                rows="5"
+                required
+              />
+            </div>
+
+            {/* IMAGE */}
+            <div className="form-group">
+              <label>Attach Image</label>
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                onChange={handleFileChange}
+                style={{ padding: '8px 12px' }}
+              />
+              <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '8px', margin: '8px 0 0 0' }}>
+                Optional. JPEG, PNG, or WebP. Maximum size: 5 MB.
+              </p>
+              {selectedFile && (
+                <p style={{ fontSize: '13px', marginTop: '8px', fontWeight: '500' }}>
+                  Selected: {selectedFile.name}
+                </p>
+              )}
+            </div>
+
+            {/* SUBMIT */}
+            <button
+              type="submit"
+              className="primary-button"
+              disabled={
+                isSubmitting ||
+                profileLoading ||
+                !!profileError ||
+                !profile?.hostelBlock ||
+                !profile?.roomNumber
+              }
+            >
+              {isSubmitting
+                ? selectedFile
+                  ? "Uploading & Submitting..."
+                  : "Submitting..."
+                : "Submit Complaint"}
+            </button>
+          </form>
+        </div>
       </main>
-
     </div>
   );
 }
