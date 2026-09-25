@@ -410,7 +410,7 @@ function RaiseComplaint({ onBack, onSubmit }) {
         {/* PROFILE INFORMATION */}
         {/* ================================= */}
         <div className="form-group">
-          <label>Location</label>
+          <label>Block</label>
           {profileLoading ? (
             <p>Loading...</p>
           ) : profileError ? (
