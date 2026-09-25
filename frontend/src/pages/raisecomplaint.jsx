@@ -3,24 +3,18 @@ import { fetchAuthSession } from "aws-amplify/auth";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL;
-
 const COMPLAINTS_URL =
   `${API_BASE_URL}/complaints`;
-
 const PROFILE_URL =
   `${API_BASE_URL}/users/me`;
-
 const PRESIGN_URL =
   `${API_BASE_URL}/uploads/presign`;
-
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
-
 const ALLOWED_IMAGE_TYPES = [
   "image/jpeg",
   "image/png",
   "image/webp",
 ];
-
 
 function RaiseComplaint({ onBack, onSubmit }) {
   const [formData, setFormData] = useState({
@@ -30,42 +24,29 @@ function RaiseComplaint({ onBack, onSubmit }) {
   });
 
   const [profile, setProfile] = useState(null);
-
   const [profileLoading, setProfileLoading] =
     useState(true);
-
   const [profileError, setProfileError] =
     useState("");
-
   const [selectedFile, setSelectedFile] =
     useState(null);
-
   const [isSubmitting, setIsSubmitting] =
     useState(false);
-
-
-  // ==========================================
-  // LOAD STUDENT PROFILE
-  // ==========================================
 
   useEffect(() => {
     const loadProfile = async () => {
       try {
         setProfileLoading(true);
         setProfileError("");
-
         const { tokens } =
           await fetchAuthSession();
-
         const accessToken =
           tokens?.accessToken?.toString();
-
         if (!accessToken) {
           throw new Error(
             "No authenticated session found."
           );
         }
-
         const response = await fetch(
           PROFILE_URL,
           {
@@ -83,7 +64,6 @@ function RaiseComplaint({ onBack, onSubmit }) {
             await response
               .json()
               .catch(() => ({}));
-
           throw new Error(
             errorData.error ||
               "Failed to load student profile."
@@ -92,9 +72,7 @@ function RaiseComplaint({ onBack, onSubmit }) {
 
         const data =
           await response.json();
-
         setProfile(data);
-
       } catch (error) {
         console.error(
           "Profile loading error:",
@@ -114,17 +92,11 @@ function RaiseComplaint({ onBack, onSubmit }) {
     loadProfile();
   }, []);
 
-
-  // ==========================================
-  // FORM HANDLING
-  // ==========================================
-
   const handleChange = (event) => {
     const {
       name,
       value,
     } = event.target;
-
     setFormData(
       (currentData) => ({
         ...currentData,
@@ -133,20 +105,13 @@ function RaiseComplaint({ onBack, onSubmit }) {
     );
   };
 
-
-  // ==========================================
-  // IMAGE SELECTION
-  // ==========================================
-
   const handleFileChange = (event) => {
     const file =
       event.target.files?.[0];
-
     if (!file) {
       setSelectedFile(null);
       return;
     }
-
     if (
       !ALLOWED_IMAGE_TYPES.includes(
         file.type
@@ -155,10 +120,8 @@ function RaiseComplaint({ onBack, onSubmit }) {
       alert(
         "Please select a JPEG, PNG, or WebP image."
       );
-
       event.target.value = "";
       setSelectedFile(null);
-
       return;
     }
 
@@ -166,104 +129,68 @@ function RaiseComplaint({ onBack, onSubmit }) {
       alert(
         "Image must be smaller than 5 MB."
       );
-
       event.target.value = "";
       setSelectedFile(null);
-
       return;
     }
-
     setSelectedFile(file);
   };
 
-
-  // ==========================================
-  // SUBMIT COMPLAINT
-  // ==========================================
-
   const handleSubmit = async (event) => {
     event.preventDefault();
-
     setIsSubmitting(true);
-
     try {
-      // ---------------------------------------
-      // Get Cognito token
-      // ---------------------------------------
-
       const { tokens } =
         await fetchAuthSession();
-
       const accessToken =
         tokens?.accessToken?.toString();
-
       if (!accessToken) {
         throw new Error(
           "No authenticated session found. Please log in again."
         );
       }
-
-
-      // ---------------------------------------
-      // Upload image if one was selected
-      // ---------------------------------------
-
       let imageKey = null;
-
       if (selectedFile) {
         console.log(
           "Requesting S3 upload URL..."
         );
-
-        // Ask Lambda for a presigned URL.
         const presignResponse =
           await fetch(
             PRESIGN_URL,
             {
               method: "POST",
-
               headers: {
                 "Content-Type":
                   "application/json",
-
                 Authorization:
                   `Bearer ${accessToken}`,
               },
-
               body: JSON.stringify({
                 fileName:
                   selectedFile.name,
-
                 contentType:
                   selectedFile.type,
               }),
             }
           );
-
         if (!presignResponse.ok) {
           const errorData =
             await presignResponse
               .json()
               .catch(() => ({}));
-
           throw new Error(
             errorData.error ||
               "Failed to prepare image upload."
           );
         }
-
         const {
           uploadUrl,
           key,
         } =
           await presignResponse.json();
-
-
         console.log(
           "Uploading image to S3..."
         );
-
-        // Upload directly to S3.
         const uploadResponse =
           await fetch(
             uploadUrl,
@@ -284,7 +211,6 @@ function RaiseComplaint({ onBack, onSubmit }) {
             "Image upload failed."
           );
         }
-
         imageKey = key;
 
         console.log(
@@ -292,12 +218,6 @@ function RaiseComplaint({ onBack, onSubmit }) {
           imageKey
         );
       }
-
-
-      // ---------------------------------------
-      // Create complaint
-      // ---------------------------------------
-
       const complaintPayload = {
         title: formData.title,
 
@@ -308,78 +228,53 @@ function RaiseComplaint({ onBack, onSubmit }) {
 
         imageKey: imageKey,
       };
-
-
       const response =
         await fetch(
           COMPLAINTS_URL,
           {
             method: "POST",
-
             headers: {
               "Content-Type":
                 "application/json",
-
               Authorization:
                 `Bearer ${accessToken}`,
             },
-
             body:
               JSON.stringify(
                 complaintPayload
               ),
           }
         );
-
-
       if (!response.ok) {
         const errorData =
           await response
             .json()
             .catch(() => ({}));
-
         throw new Error(
           errorData.error ||
             "Failed to submit complaint."
         );
       }
-
-
       const complaint =
         await response.json();
-
-
       console.log(
         "Complaint created:",
         complaint
       );
-
-
       onSubmit(complaint);
-
     } catch (error) {
-
       console.error(
         "Complaint submission error:",
         error
       );
-
       alert(
         error.message ||
           "Failed to submit complaint. Please try again."
       );
-
     } finally {
-
       setIsSubmitting(false);
-
     }
   };
-
-
-  // ==========================================
-  // UI
-  // ==========================================
 
   return (
     <div className="layout">
@@ -468,7 +363,6 @@ function RaiseComplaint({ onBack, onSubmit }) {
               </select>
             </div>
 
-            {/* DESCRIPTION */}
             <div className="form-group">
               <label>Description</label>
               <textarea
@@ -481,7 +375,6 @@ function RaiseComplaint({ onBack, onSubmit }) {
               />
             </div>
 
-            {/* IMAGE */}
             <div className="form-group">
               <label>Attach Image</label>
               <input
@@ -500,7 +393,6 @@ function RaiseComplaint({ onBack, onSubmit }) {
               )}
             </div>
 
-            {/* SUBMIT */}
             <button
               type="submit"
               className="primary-button"

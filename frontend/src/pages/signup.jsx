@@ -11,35 +11,22 @@ function Signup({ onBackToLogin }) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] =
     useState("");
-
   const [hostelBlock, setHostelBlock] =
     useState("");
-
   const [roomNumber, setRoomNumber] =
     useState("");
-
   const [confirmationCode, setConfirmationCode] =
     useState("");
-
   const [step, setStep] = useState("signup");
-
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-
   const [isLoading, setIsLoading] =
     useState(false);
 
-
-  // ==========================================
-  // SIGN UP
-  // ==========================================
-
   const handleSignup = async (event) => {
     event.preventDefault();
-
     setError("");
     setMessage("");
-
     if (
       !name ||
       !email ||
@@ -51,54 +38,39 @@ function Signup({ onBackToLogin }) {
       setError(
         "Please fill in all fields."
       );
-
       return;
     }
-
-
     if (password !== confirmPassword) {
       setError(
         "Passwords do not match."
       );
-
       return;
     }
-
-
     try {
       setIsLoading(true);
-
-
       const result = await signUp({
         username: email,
         password,
-
         options: {
           userAttributes: {
             email: email,
             name: name,
           },
-
           clientMetadata: {
             hostelBlock: hostelBlock,
             roomNumber: roomNumber,
           },
         },
       });
-
-
       console.log(
         "Signup result:",
         result
       );
-
-
       if (
         result.nextStep?.signUpStep ===
         "CONFIRM_SIGN_UP"
       ) {
         setStep("confirm");
-
         setMessage(
           "Account created. Check your email for the verification code."
         );
@@ -106,61 +78,40 @@ function Signup({ onBackToLogin }) {
         setMessage(
           "Account created successfully. You can now sign in."
         );
-
         setStep("done");
       }
-
     } catch (err) {
-
       console.error(
         "Signup error:",
         err
       );
-
       setError(
         err.message ||
           "Could not create your account."
       );
-
     } finally {
       setIsLoading(false);
     }
   };
 
-
-  // ==========================================
-  // CONFIRM SIGN UP
-  // ==========================================
-
   const handleConfirmSignup = async (
     event
   ) => {
     event.preventDefault();
-
     setError("");
     setMessage("");
-
-
     if (!confirmationCode) {
       setError(
         "Please enter the verification code."
       );
-
       return;
     }
-
-
     try {
       setIsLoading(true);
-
-
       const result = await confirmSignUp({
         username: email,
-
         confirmationCode:
-
           confirmationCode,
-
         options: {
           clientMetadata: {
             hostelBlock: hostelBlock,
@@ -168,59 +119,39 @@ function Signup({ onBackToLogin }) {
           },
         },
       });
-
-
       console.log(
         "Confirmation result:",
         result
       );
-
-
       setMessage(
         "Email verified successfully. Your student account is ready."
       );
-
       setStep("done");
-
     } catch (err) {
-
       console.error(
         "Confirmation error:",
         err
       );
-
       setError(
         err.message ||
           "Invalid verification code."
       );
-
     } finally {
       setIsLoading(false);
     }
   };
-
-
   return (
     <div className="login-container">
-
       <div className="login-card">
-
-        {/* ================================= */}
-        {/* SIGN UP FORM */}
-        {/* ================================= */}
-
         {step === "signup" && (
           <>
             <h1>Hostel Maintenance</h1>
-
             <h2>
               Create Student Account
             </h2>
-
             <form
               onSubmit={handleSignup}
             >
-
               <input
                 type="text"
                 placeholder="Full Name"
@@ -232,8 +163,6 @@ function Signup({ onBackToLogin }) {
                 }
                 required
               />
-
-
               <input
                 type="email"
                 placeholder="Email"
@@ -245,8 +174,6 @@ function Signup({ onBackToLogin }) {
                 }
                 required
               />
-
-
               <input
                 type="password"
                 placeholder="Password"
@@ -258,8 +185,6 @@ function Signup({ onBackToLogin }) {
                 }
                 required
               />
-
-
               <input
                 type="password"
                 placeholder="Confirm Password"
@@ -271,10 +196,6 @@ function Signup({ onBackToLogin }) {
                 }
                 required
               />
-
-
-              {/* HOSTEL BLOCK */}
-
               <select
                 value={hostelBlock}
                 onChange={(event) =>
@@ -284,19 +205,15 @@ function Signup({ onBackToLogin }) {
                 }
                 required
               >
-
                 <option value="">
                   Select hostel block
                 </option>
-
                 <option value="LH A">
                   LH-A
                 </option>
-
                 <option value="LH B">
                   LH-B
                 </option>
-
                 <option value="LH C">
                   LH-C
                 </option>
@@ -372,14 +289,7 @@ function Signup({ onBackToLogin }) {
                 <option value="MH T">
                   MH-T
                 </option>
-
-                
-
               </select>
-
-
-              {/* ROOM NUMBER */}
-
               <input
                 type="text"
                 placeholder="Room Number"
@@ -391,22 +301,16 @@ function Signup({ onBackToLogin }) {
                 }
                 required
               />
-
-
               {error && (
                 <p className="error-message">
                   {error}
                 </p>
               )}
-
-
               {message && (
                 <p className="success-message">
                   {message}
                 </p>
               )}
-
-
               <button
   type="submit"
   className="primary-button full-width"
@@ -416,16 +320,10 @@ function Signup({ onBackToLogin }) {
                   ? "Creating account..."
                   : "Sign Up"}
               </button>
-
             </form>
-
-
             <p className="signup-link">
-
               Already have an account?
-
               {" "}
-
               <button
   type="button"
   className="primary-button full-width"
@@ -435,40 +333,25 @@ function Signup({ onBackToLogin }) {
 >
                 Back to Login
               </button>
-
             </p>
-
           </>
         )}
-
-
-        {/* ================================= */}
-        {/* EMAIL CONFIRMATION */}
-        {/* ================================= */}
-
         {step === "confirm" && (
           <>
             <h1>
               Verify Your Email
             </h1>
-
-
             <p>
               We sent a verification code to:
             </p>
-
-
             <strong>
               {email}
             </strong>
-
-
             <form
               onSubmit={
                 handleConfirmSignup
               }
             >
-
               <input
                 type="text"
                 placeholder="Verification Code"
@@ -480,22 +363,16 @@ function Signup({ onBackToLogin }) {
                 }
                 required
               />
-
-
               {error && (
                 <p className="error-message">
                   {error}
                 </p>
               )}
-
-
               {message && (
                 <p className="success-message">
                   {message}
                 </p>
               )}
-
-
               <button
                 type="submit"
                 disabled={isLoading}
@@ -504,17 +381,9 @@ function Signup({ onBackToLogin }) {
                   ? "Verifying..."
                   : "Verify Email"}
               </button>
-
             </form>
-
           </>
         )}
-
-
-        {/* ================================= */}
-        {/* DONE */}
-        {/* ================================= */}
-
         {step === "done" && (
           <>
             <h1>
