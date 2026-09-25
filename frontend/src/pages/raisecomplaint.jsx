@@ -402,11 +402,8 @@ function RaiseComplaint({ onBack, onSubmit }) {
             <p>Provide details about the maintenance issue.</p>
           </header>
 
-          {/* ================================= */}
-          {/* PROFILE INFORMATION */}
-          {/* ================================= */}
-          <div style={{ display: 'flex', gap: '16px', marginBottom: '24px' }}>
-            <div className="form-group" style={{ flex: 1, marginBottom: 0 }}>
+          <div style={{ display: 'flex', gap: '24px', marginBottom: '24px', width: '100%' }}>
+            <div className="form-group" style={{ flex: '1 1 0', marginBottom: 0 }}>
               <label>Hostel Block</label>
               {profileLoading ? (
                 <p style={{ margin: 0, fontSize: '14px', color: 'var(--text-muted)' }}>Loading...</p>
@@ -422,7 +419,7 @@ function RaiseComplaint({ onBack, onSubmit }) {
               )}
             </div>
             
-            <div className="form-group" style={{ flex: 1, marginBottom: 0 }}>
+            <div className="form-group" style={{ flex: '1 1 0', marginBottom: 0 }}>
               <label>Room Number</label>
               {profileLoading ? (
                 <p style={{ margin: 0, fontSize: '14px', color: 'var(--text-muted)' }}>Loading...</p>
@@ -439,13 +436,9 @@ function RaiseComplaint({ onBack, onSubmit }) {
             </div>
           </div>
 
-          {/* ================================= */}
-          {/* COMPLAINT FORM */}
-          {/* ================================= */}
           <form className="complaint-form" onSubmit={handleSubmit}>
             
-            {/* TITLE */}
-            <div className="form-group">
+]            <div className="form-group">
               <label>Complaint Title</label>
               <input
                 type="text"
@@ -457,7 +450,6 @@ function RaiseComplaint({ onBack, onSubmit }) {
               />
             </div>
 
-            {/* CATEGORY */}
             <div className="form-group">
               <label>Category</label>
               <select
